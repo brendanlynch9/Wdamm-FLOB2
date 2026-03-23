@@ -1,0 +1,324 @@
+{
+    "config": {
+        "full_model": "TinyLlama/TinyLlama-1.1B-Chat-v0.3",
+        "small_model": "EleutherAI/pythia-70m",
+        "lambda_threshold": 0.3,
+        "max_new_tokens": 128
+    },
+    "baseline": {
+        "tokens": 250,
+        "energy_kwh": 3.3311823176013096e-07,
+        "cost_usd": 4.9967734764019644e-08,
+        "co2_kg": 1.2658492806884977e-07,
+        "energy_per_token_Wh": 1.3324729270405239e-06
+    },
+    "gated": {
+        "tokens": 107,
+        "energy_kwh": 1.567271829975976e-07,
+        "cost_usd": 2.350907744963964e-08,
+        "co2_kg": 5.955632953908709e-08,
+        "routing": [
+            {
+                "prompt": "What is the capital of France?",
+                "lambda2": 0.364501953125,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What planet is closest to the sun?",
+                "lambda2": 0.8634440104166666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Name a large red star.",
+                "lambda2": 0.4542643229166667,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What does CPU stand for?",
+                "lambda2": 0.69970703125,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "List two primary colors.",
+                "lambda2": 0.4375,
+                "used_small": true,
+                "new_tokens": 2
+            },
+            {
+                "prompt": "Write the number after 10.",
+                "lambda2": 0.6106770833333334,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the chemical symbol for gold?",
+                "lambda2": 0.8170572916666666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Who invented the light bulb?",
+                "lambda2": 0.9532877604166666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the freezing point of water in Celsius?",
+                "lambda2": 0.7584635416666666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Name the fastest land animal.",
+                "lambda2": 0.25830078125,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What is the largest ocean on Earth?",
+                "lambda2": 0.6153971354166666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What language is spoken in Brazil?",
+                "lambda2": 0.6123046875,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the value of $\\pi$ (to one decimal place)?",
+                "lambda2": 0.82666015625,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "How many legs does an insect have?",
+                "lambda2": 0.64794921875,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What year did the Titanic sink?",
+                "lambda2": 0.4622395833333333,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Name a famous German composer.",
+                "lambda2": 0.6277669270833334,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the main ingredient in bread?",
+                "lambda2": 0.07438151041666667,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What does WWW stand for?",
+                "lambda2": 0.11897786458333333,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "Which gas do humans primarily exhale?",
+                "lambda2": 0.07014973958333333,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What is the largest country by land area?",
+                "lambda2": 0.824462890625,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the currency of Japan?",
+                "lambda2": 0.6103515625,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Who wrote Romeo and Juliet?",
+                "lambda2": 0.669921875,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the unit of electric resistance?",
+                "lambda2": 0.23583984375,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What color is chlorophyll?",
+                "lambda2": 0.5467122395833334,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "How many sides does a hexagon have?",
+                "lambda2": 0.17985026041666666,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What is the name of our galaxy?",
+                "lambda2": 0.26123046875,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "Name the highest mountain in Africa.",
+                "lambda2": 0.49658203125,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the chemical symbol for water?",
+                "lambda2": 0.82421875,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Who was the first U.S. President?",
+                "lambda2": 0.603515625,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the square root of 9?",
+                "lambda2": 0.7224934895833334,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What animal is known as the 'King of the Jungle'?",
+                "lambda2": 0.8533528645833334,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What metal is liquid at room temperature?",
+                "lambda2": 0.28369140625,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "How many days are in a leap year?",
+                "lambda2": 0.57763671875,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the official language of China?",
+                "lambda2": 0.842529296875,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Name a type of pasta.",
+                "lambda2": 0.9698893229166666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the capital of Italy?",
+                "lambda2": 0.23958333333333334,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What is the closest star to Earth (besides the sun)?",
+                "lambda2": 0.6280924479166666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the chemical symbol for oxygen?",
+                "lambda2": 0.4456380208333333,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Who painted the Mona Lisa?",
+                "lambda2": 0.9373372395833334,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the boiling point of water in Fahrenheit?",
+                "lambda2": 0.08675130208333333,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What is the main component of Earth's atmosphere?",
+                "lambda2": 0.86767578125,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the definition of a desert?",
+                "lambda2": 0.8873697916666666,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "How many strings does a standard guitar have?",
+                "lambda2": 0.22184244791666666,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "Name a South American country.",
+                "lambda2": 0.021158854166666668,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What is the largest organ in the human body?",
+                "lambda2": 0.019775390625,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What does the acronym 'URL' stand for?",
+                "lambda2": 0.4754231770833333,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Which element has the atomic number 1?",
+                "lambda2": 0.06315104166666667,
+                "used_small": false,
+                "new_tokens": 5
+            },
+            {
+                "prompt": "What is the currency of the UK?",
+                "lambda2": 0.9959309895833334,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Who directed the film Jaws?",
+                "lambda2": 0.35400390625,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "What is the next prime number after 7?",
+                "lambda2": 0.6490885416666666,
+                "used_small": true,
+                "new_tokens": 1
+            }
+        ],
+        "energy_per_token_Wh": 1.464740028014931e-06
+    }
+}

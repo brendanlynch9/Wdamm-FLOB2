@@ -1,0 +1,42 @@
+{
+    "config": {
+        "full_model": "TinyLlama/TinyLlama-1.1B-Chat-v0.3",
+        "small_model": "EleutherAI/pythia-70m",
+        "lambda_threshold": 0.3,
+        "max_new_tokens": 128
+    },
+    "baseline": {
+        "tokens": 384,
+        "energy_kwh": 0.0,
+        "cost_usd": 0.0,
+        "co2_kg": 0.0,
+        "energy_per_token_Wh": 0.0
+    },
+    "gated": {
+        "tokens": 130,
+        "energy_kwh": 0.0,
+        "cost_usd": 0.0,
+        "co2_kg": 0.0,
+        "routing": [
+            {
+                "prompt": "Explain the process of photosynthesis.",
+                "lambda2": 0.09814453125,
+                "used_small": false,
+                "new_tokens": 128
+            },
+            {
+                "prompt": "Describe the taste of a lemon.",
+                "lambda2": 0.32666015625,
+                "used_small": true,
+                "new_tokens": 1
+            },
+            {
+                "prompt": "Write a haiku about machine learning.",
+                "lambda2": 0.5901692708333334,
+                "used_small": true,
+                "new_tokens": 1
+            }
+        ],
+        "energy_per_token_Wh": 0.0
+    }
+}

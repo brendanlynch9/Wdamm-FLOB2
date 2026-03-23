@@ -1,0 +1,101 @@
+Explain the process of photosynthesis.
+Describe the taste of a lemon.
+Write a haiku about machine learning.
+What is the capital of Australia?
+List three benefits of regular exercise.
+Define the term 'quantum entanglement.'
+Summarize the plot of *The Great Gatsby*.
+Who invented the World Wide Web?
+Generate a short Python function for quicksort.
+How does a refrigerator work?
+Tell me a simple joke.
+What are the main causes of climate change?
+Explain the concept of supply and demand.
+Write a sentence using the word 'ephemeral.'
+What is the difference between a neuron and a synapse?
+Recite the first two stanzas of "The Raven" by Edgar Allan Poe.
+Define 'stoicism' and name a famous stoic.
+What are the steps to brew coffee using a French press?
+Explain the theory of general relativity in simple terms.
+What is the most active volcano in the world?
+Draft a professional email to a colleague requesting project updates.
+Write a four-line poem about the sea.
+What is the purpose of the human appendix?
+Describe the architecture of a transformer model.
+How do search engines rank websites?
+List the primary colors of light.
+Explain the process of nuclear fusion.
+What is the definition of a prime number?
+Compare the philosophies of Plato and Aristotle.
+Generate a recipe for chocolate chip cookies.
+Why is the sky blue?
+Name the seven continents.
+What does the acronym 'URL' stand for?
+Write a motivational quote about failure.
+Describe the life cycle of a butterfly.
+Explain the concept of a 'black hole.'
+What are the health benefits of drinking green tea?
+Design a logo idea for a new coffee shop called "The Daily Grind."
+Explain the difference between weather and climate.
+Describe the rules of chess.
+Write a short dialogue between a programmer and a debugging rubber duck.
+What is the historical significance of the Magna Carta?
+Explain how blockchain technology works.
+List the ingredients for a traditional Caesar salad.
+What is the main function of the liver?
+Write a short story opening about finding a strange device.
+Define 'cognitive dissonance.'
+How is electricity generated from wind power?
+What are the primary keys of a database table?
+Summarize the history of the Roman Empire in three sentences.
+Explain the concept of inflation.
+What is the speed of light?
+Write a brief review of the movie *Inception*.
+Describe the structure of a DNA molecule.
+What are the ethical concerns surrounding AI development?
+Name three types of clouds.
+Explain the concept of 'net neutrality.'
+What is the significance of the number 'pi' ($\pi$)?
+Write a thank you note to a teacher.
+Describe the Coriolis effect.
+What is the difference between TCP and UDP?
+Explain the principles of object-oriented programming (OOP).
+List three major world religions.
+Write a short poem about the changing seasons.
+How do vaccines work?
+Define 'supply chain management.'
+What is the largest organ in the human body?
+Explain the concept of a 'variable' in algebra.
+Write a prompt for an image generator: a futuristic city at sunset.
+What is the importance of biodiversity?
+Describe the main features of the Baroque art period.
+Explain the function of the spinal cord.
+Name the four fundamental forces of nature.
+Write a 10-word marketing slogan for a new smartphone.
+What is the difference between a high-pass and a low-pass filter?
+Explain the concept of gravitational waves.
+Describe the process of sedimentation.
+List three famous works by William Shakespeare.
+What is the basic syntax for a 'for' loop in JavaScript?
+Explain the role of mitochondria in a cell.
+Describe the main conflict in the novel *1984*.
+What is the formula for the area of a circle?
+Write a short letter to your future self.
+Define 'monarchy.'
+How are stars born?
+What is the capital of Canada?
+Explain why the Titanic sank.
+Describe the process of natural selection.
+What is the biggest threat to coral reefs?
+Write three questions a scientist might ask about deep-sea creatures.
+Define 'capitalism.'
+How do telescopes help us study the universe?
+Explain the concept of a recursive function.
+What are the official languages of Switzerland?
+List the planets in our solar system in order from the sun.
+Write a very short summary of the American Civil War.
+Describe the function of the ozone layer.
+What is the metric system?
+Explain the concept of 'digital footprint.'
+Write a short prayer of gratitude.
+How does magnetic resonance imaging (MRI) work?

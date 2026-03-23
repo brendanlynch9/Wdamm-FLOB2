@@ -1,0 +1,630 @@
+{
+  "config": {
+    "full_model": "TinyLlama/TinyLlama-1.1B-Chat-v0.3",
+    "small_model": "EleutherAI/pythia-70m",
+    "lambda_threshold": 0.3,
+    "max_new_tokens": 128
+  },
+  "baseline": {
+    "tokens": 12928,
+    "energy_kwh": 0.0,
+    "cost_usd": 0.0,
+    "co2_kg": 0.0,
+    "energy_per_token_Wh": 0.0
+  },
+  "gated": {
+    "tokens": 12867,
+    "energy_kwh": 0.0,
+    "cost_usd": 0.0,
+    "co2_kg": 0.0,
+    "energy_per_token_Wh": 0.0,
+    "routing": [
+      {
+        "prompt": "Explain the process of photosynthesis.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the taste of a lemon.",
+        "lambda2": 0.38560911662642705,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a haiku about machine learning.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the capital of Australia?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "List three benefits of regular exercise.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Define the term 'quantum entanglement.'",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Summarize the plot of *The Great Gatsby*.",
+        "lambda2": 0.2597316945810574,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Who invented the World Wide Web?",
+        "lambda2": 0.2597316945810574,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Generate a short Python function for quicksort.",
+        "lambda2": 0.312658681236732,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "How does a refrigerator work?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Tell me a simple joke.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What are the main causes of climate change?",
+        "lambda2": 0.3060764332628972,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of supply and demand.",
+        "lambda2": 0.30001837872545095,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a sentence using the word 'ephemeral.'",
+        "lambda2": 0.312658681236732,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the difference between a neuron and a synapse?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Recite the first two stanzas of \"The Raven\" by Edgar Allan Poe.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Define 'stoicism' and name a famous stoic.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What are the steps to brew coffee using a French press?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the theory of general relativity in simple terms.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the most active volcano in the world?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Draft a professional email to a colleague requesting project updates.",
+        "lambda2": 0.30001837872545095,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a four-line poem about the sea.",
+        "lambda2": 0.38560911662642705,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the purpose of the human appendix?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the architecture of a transformer model.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "How do search engines rank websites?",
+        "lambda2": 0.3132453889477463,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "List the primary colors of light.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the process of nuclear fusion.",
+        "lambda2": 0.2597316945810574,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the definition of a prime number?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Compare the philosophies of Plato and Aristotle.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Generate a recipe for chocolate chip cookies.",
+        "lambda2": 0.38560911662642705,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Why is the sky blue?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Name the seven continents.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What does the acronym 'URL' stand for?",
+        "lambda2": 0.312658681236732,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a motivational quote about failure.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the life cycle of a butterfly.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of a 'black hole.'",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What are the health benefits of drinking green tea?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Design a logo idea for a new coffee shop called \"The Daily Grind.\"",
+        "lambda2": 0.312658681236732,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the difference between weather and climate.",
+        "lambda2": 0.312658681236732,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the rules of chess.",
+        "lambda2": 0.312658681236732,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a short dialogue between a programmer and a debugging rubber duck.",
+        "lambda2": 0.30001837872545095,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the historical significance of the Magna Carta?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain how blockchain technology works.",
+        "lambda2": 0.33321825361856033,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "List the ingredients for a traditional Caesar salad.",
+        "lambda2": 0.33321825361856033,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the main function of the liver?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a short story opening about finding a strange device.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Define 'cognitive dissonance.'",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "How is electricity generated from wind power?",
+        "lambda2": 0.2597316945810574,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What are the primary keys of a database table?",
+        "lambda2": 0.30001837872545095,
+        "used_small": true,
+        "new_tokens": 124
+      },
+      {
+        "prompt": "Summarize the history of the Roman Empire in three sentences.",
+        "lambda2": 0.3132453889477463,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of inflation.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the speed of light?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a brief review of the movie *Inception*.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the structure of a DNA molecule.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What are the ethical concerns surrounding AI development?",
+        "lambda2": 0.3060764332628972,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Name three types of clouds.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of 'net neutrality.'",
+        "lambda2": 0.31875698230089694,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the significance of the number 'pi' ($\\pi$)?",
+        "lambda2": 0.38560911662642705,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a thank you note to a teacher.",
+        "lambda2": 0.3132453889477463,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the Coriolis effect.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the difference between TCP and UDP?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the principles of object-oriented programming (OOP).",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "List three major world religions.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a short poem about the changing seasons.",
+        "lambda2": 0.3060764332628972,
+        "used_small": true,
+        "new_tokens": 71
+      },
+      {
+        "prompt": "How do vaccines work?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Define 'supply chain management.'",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the largest organ in the human body?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of a 'variable' in algebra.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a prompt for an image generator: a futuristic city at sunset.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the importance of biodiversity?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the main features of the Baroque art period.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the function of the spinal cord.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Name the four fundamental forces of nature.",
+        "lambda2": 0.3132453889477463,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a 10-word marketing slogan for a new smartphone.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the difference between a high-pass and a low-pass filter?",
+        "lambda2": 0.31875698230089694,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of gravitational waves.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the process of sedimentation.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "List three famous works by William Shakespeare.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the basic syntax for a 'for' loop in JavaScript?",
+        "lambda2": 0.38560911662642705,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the role of mitochondria in a cell.",
+        "lambda2": 0.33321825361856033,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the main conflict in the novel *1984*.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the formula for the area of a circle?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a short letter to your future self.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Define 'monarchy.'",
+        "lambda2": 0.2597316945810574,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "How are stars born?",
+        "lambda2": 0.30001837872545095,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the capital of Canada?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain why the Titanic sank.",
+        "lambda2": 0.33321825361856033,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the process of natural selection.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the biggest threat to coral reefs?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write three questions a scientist might ask about deep-sea creatures.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Define 'capitalism.'",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "How do telescopes help us study the universe?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of a recursive function.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What are the official languages of Switzerland?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "List the planets in our solar system in order from the sun.",
+        "lambda2": 0.33321825361856033,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a very short summary of the American Civil War.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Describe the function of the ozone layer.",
+        "lambda2": 0.3060764332628972,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "What is the metric system?",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Explain the concept of 'digital footprint.'",
+        "lambda2": 0.3060764332628972,
+        "used_small": true,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "Write a short prayer of gratitude.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 128
+      },
+      {
+        "prompt": "How does magnetic resonance imaging (MRI) work?",
+        "lambda2": 0.31875698230089694,
+        "used_small": true,
+        "new_tokens": 128
+      }
+    ]
+  }
+}

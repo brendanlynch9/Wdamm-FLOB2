@@ -1,0 +1,36 @@
+{
+  "baseline": {
+    "tokens": 192,
+    "energy_kwh": 0.0,
+    "cost_usd": 0.0,
+    "co2_kg": 0.0,
+    "energy_per_token_Wh": 0.0
+  },
+  "gated": {
+    "tokens": 192,
+    "energy_kwh": 0.0,
+    "cost_usd": 0.0,
+    "co2_kg": 0.0,
+    "energy_per_token_Wh": 0.0,
+    "routing": [
+      {
+        "prompt": "Explain gravity.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 64
+      },
+      {
+        "prompt": "Describe the taste of a lemon.",
+        "lambda2": NaN,
+        "used_small": false,
+        "new_tokens": 64
+      },
+      {
+        "prompt": "Write a haiku about machine learning.",
+        "lambda2": 0.3132453889477463,
+        "used_small": true,
+        "new_tokens": 64
+      }
+    ]
+  }
+}
