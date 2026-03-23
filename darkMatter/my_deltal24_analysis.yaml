@@ -1,0 +1,52 @@
+# 1. Theory Code: We use CAMB, which is well-integrated with Planck data.
+theory:
+  camb:
+    # Set high-l resolution to match the Planck data
+    l_max_scalars: 2500
+    extra_args:
+      # These CAMB options are necessary for full precision
+      lens_potential_accuracy: 1
+      accurate_sidelobe: True
+      
+  # 2. Your Custom C_l Modifier (Placeholder for your code)
+  # You would need to define this Python module (e.g., 'my_theory_modules.DeltaL24Modifier')
+  DeltaL24Modifier:
+    external: my_theory_modules.DeltaL24Modifier 
+    
+# 3. Likelihoods: The full Planck 2018 baseline
+likelihood:
+  planck_2018_lowl.TT_clik: null      # Commander low-l TT
+  planck_2018_lowl.EE_clik: null      # SimAll low-l EE
+  planck_2018_highl_plik.TTTEEE: null # Plik High-l TT/TE/EE (automatically includes 47 nuisances)
+  planck_2018_lensing.clik: null      # Lensing likelihood
+
+# 4. Parameters (Cosmological + Custom)
+params:
+  # Standard Base-LambdaCDM Parameters
+  cosmomc_theta: 0.0104085 # Angular scale of the sound horizon (highly constrained)
+  ombh2: 0.02237           # Baryon density
+  omch2: 0.1200            # Cold Dark Matter density
+  tau: 0.0544              # Reionization optical depth
+  A_s: 2.100e-9            # Amplitude of primordial power
+  n_s: 0.9649              # Scalar spectral index
+  H0:                    # Hubble constant (derived parameter)
+    value: 67.36
+
+  # YOUR CUSTOM PARAMETER
+  A_mod24:
+    prior:
+      min: -1.0
+      max: 1.0
+    ref: 0.0               # Start the chain at the LCDM value (0 modulation)
+    proposal: 0.05
+    latex: A_{\\Delta l=24}  # LaTeX label for plots
+
+# 5. Sampler Configuration
+sampler:
+  mcmc:
+    max_tries: 10000
+    burn_in: 300
+    R_minus_1_stop: 0.01 # Stop criterion for chain convergence
+    output_every: 30m
+
+output: chain_deltal24

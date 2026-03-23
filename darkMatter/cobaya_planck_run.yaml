@@ -1,0 +1,138 @@
+cobaya_planck_run.yaml
+
+Main configuration file to run the sampler with your custom UFT-F theory model
+
+and Planck/ACT likelihoods.
+
+--- 1. SAMPLER CONFIGURATION ---
+
+We use the 'mcmc' sampler (Monte Carlo Markov Chain)
+
+Use 'fast_slow' for higher dimensionality if it starts converging slowly.
+
+sampler:
+mcmc:
+burn_in: 50
+max_tries: 500
+oversample_thin: 5 # Reduce storage load
+output_every: 600s
+learn_every: 80d  # Learning parameter step-size
+learn_sigma: 2d   # Use for learning covariance
+
+--- 2. PARAMETERS TO VARY ---
+
+Cosmological parameters are required to generate the base Cls.
+
+We will use the standard Planck six parameters + your two Base-24 parameters.
+
+params:
+
+Base 6 LCDM parameters (must be passed to the 'classy' theory)
+
+ombh2:
+prior:
+min: 0.005
+max: 0.03
+ref: 0.02237
+proposal: 0.0001
+omch2:
+prior:
+min: 0.01
+max: 0.15
+ref: 0.1200
+proposal: 0.001
+H0:
+prior:
+min: 40
+max: 100
+ref: 67.36
+proposal: 1.0
+tau:
+prior:
+min: 0.01
+max: 0.2
+ref: 0.0544
+proposal: 0.005
+As:
+prior:
+min: 1.5e-9
+max: 3.5e-9
+ref: 2.1e-9
+proposal: 0.1e-9
+ns:
+prior:
+min: 0.9
+max: 1.1
+ref: 0.9649
+proposal: 0.005
+
+--- Your Custom Base-24 Parameters ---
+
+A_base24:
+prior:
+min: -0.1 # Example: Amplitude of the oscillation
+max: 0.1
+ref: 0.0
+proposal: 0.01
+k_base24:
+prior:
+min: 0.5 # Example: Logarithmic frequency of the oscillation
+max: 5.0
+ref: 2.0
+proposal: 0.1
+
+Planck nuisance parameters (required by the plik likelihoods)
+
+You must include ALL nuisance parameters expected by the likelihood.
+
+A_planck:
+prior:
+min: 0.5
+max: 1.5
+ref: 1.0
+proposal: 0.005
+
+--- 3. THEORIES (Where the Cls are calculated) ---
+
+Your custom theory must be listed after the base cosmology code (CLASS or CAMB).
+
+theory:
+
+The base cosmology code (CLASS is standard for Planck)
+
+classy:
+# CLASS settings for maximum ell, required by the high-l likelihood
+stop_at_error: True
+extra_args:
+l_max_scalars: 5000 # Max multipole to compute for C_l
+modes: [s]
+
+Your Custom Theory Module
+
+uftf_cmb_theory:
+# This line tells Cobaya where to find your class
+external: my_theory_model.py 
+
+--- 4. LIKELIHOODS (Where the data comparison happens) ---
+
+likelihood:
+
+Planck High-l Plik Likelihood
+
+planck_plik_rd12_hm_tt_ext_dx12:
+# Ensure this path is correct for your local installation of the Planck data
+path: /path/to/your/planck_clik_data/
+# If you use the full TTTEEE likelihood, replace the above with:
+# planck_plik_rd12_hm_tt_te_ee_ext_dx12:
+#   path: /path/to/your/planck_clik_data/
+
+Planck Low-l Commander Likelihood (for l < 30)
+
+planck_lowl_commander:
+# Ensure this path is correct for your local installation of the Planck data
+path: /path/to/your/planck_clik_data/
+
+Planck Low-l Pol Likelihood (optional but recommended)
+
+planck_lowl_simall:
+path: /path/to/your/planck_clik_data/
