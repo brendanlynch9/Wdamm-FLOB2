@@ -1,0 +1,13 @@
+--- ACI Regularization Results (UFT-F Model) ---
+Approximation Limit (N_max): 5000
+T-Breaking Regulator (phi_u = 2*pi*omega_u): 0.00130253 radians
+
+1. L1 Norm of T-Symmetric Potential (V^0):
+   (Integral of |V^0| over theta): 9.6678
+
+2. L1 Norm of ACI-Regularized Potential (V^ACI):
+   (Integral of |V^ACI| over theta): 9.6637
+
+Regularization Efficacy:
+   Ratio (V^0 / V^ACI): 1.00
+Calculation Time: 0.17 seconds
