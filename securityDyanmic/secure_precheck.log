@@ -1,0 +1,48 @@
+2025-12-10 09:23:16 | === Demo start ===
+2025-12-10 09:23:16 | Generated new key version 1 and stored in ./keystore/key_v1.json
+2025-12-10 09:23:16 | Loaded key version 1 (key file: ./keystore/key_v1.json)
+2025-12-10 09:23:16 | Initial last_accepted_counter = 0
+2025-12-10 09:23:16 | Sender created counter=353076039 tag_len=8
+2025-12-10 09:23:16 | Recorded failure #1; backoff_until=0.0
+2025-12-10 09:23:16 | Verify attempt 1 -> accepted=False, reason=counter_out_of_window (allowed [1,1], got 353076039), new_last=0
+2025-12-10 09:23:16 | Recorded failure #2; backoff_until=0.0
+2025-12-10 09:23:16 | Replay attempt -> accepted=False, reason=counter_out_of_window (allowed [1,1], got 353076039), last=0
+2025-12-10 09:23:16 | Recorded failure #3; backoff_until=0.0
+2025-12-10 09:23:16 | Old-counter attempt -> accepted=False, reason=counter_out_of_window (allowed [1,1], got 353076029), last=0
+2025-12-10 09:23:16 | Recorded failure #4; backoff_until=0.0
+2025-12-10 09:23:16 | Tampered attempt -> accepted=False, reason=counter_out_of_window (allowed [1,1], got 353076039), last=0
+2025-12-10 09:23:16 | Generating rapid failures to trigger rate limiting (may back off)...
+2025-12-10 09:23:16 | Recorded failure #5; backoff_until=1765380198.912781
+2025-12-10 09:23:16 | Rapid failure #1: accepted=False, reason=counter_out_of_window (allowed [1,1], got 353077038)
+2025-12-10 09:23:16 | Rapid failure #2: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:23:16 | Rapid failure #3: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:23:16 | Rapid failure #4: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:23:16 | Rapid failure #5: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:23:16 | Rapid failure #6: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:23:16 | Rapid failure #7: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:23:16 | === Demo end ===
+2025-12-10 09:30:21 | Generated new key version 1 and stored in ./keystore/key_v1.json
+2025-12-10 09:30:21 | Loaded key version 1 (key file: ./keystore/key_v1.json)
+2025-12-10 09:30:21 | Pre-seeded state: last_accepted_counter = 353076123
+2025-12-10 09:30:21 | === Demo start ===
+2025-12-10 09:30:21 | Initial last_accepted_counter = 353076123
+2025-12-10 09:30:21 | Sender created counter=353076124 tag_len=8
+2025-12-10 09:30:21 | Persisted last_accepted_counter = 353076124
+2025-12-10 09:30:21 | Verify attempt 1 -> accepted=True, reason=accepted, new_last=353076124
+2025-12-10 09:30:21 | Recorded failure #1; backoff_until=0.0
+2025-12-10 09:30:21 | Replay attempt -> accepted=False, reason=counter_out_of_window (allowed [353076125,353076125], got 353076124), last=353076124
+2025-12-10 09:30:21 | Recorded failure #2; backoff_until=0.0
+2025-12-10 09:30:21 | Old-counter attempt -> accepted=False, reason=counter_out_of_window (allowed [353076125,353076125], got 353076114), last=353076124
+2025-12-10 09:30:21 | Recorded failure #3; backoff_until=0.0
+2025-12-10 09:30:21 | Tampered attempt -> accepted=False, reason=counter_out_of_window (allowed [353076125,353076125], got 353076124), last=353076124
+2025-12-10 09:30:21 | Generating rapid failures to trigger rate limiting (may back off)...
+2025-12-10 09:30:21 | Recorded failure #4; backoff_until=0.0
+2025-12-10 09:30:21 | Rapid failure #1: accepted=False, reason=counter_out_of_window (allowed [353076125,353076125], got 353077123)
+2025-12-10 09:30:21 | Recorded failure #5; backoff_until=1765380623.833462
+2025-12-10 09:30:21 | Rapid failure #2: accepted=False, reason=counter_out_of_window (allowed [353076125,353076125], got 353077124)
+2025-12-10 09:30:21 | Rapid failure #3: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:30:21 | Rapid failure #4: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:30:21 | Rapid failure #5: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:30:21 | Rapid failure #6: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:30:21 | Rapid failure #7: accepted=False, reason=rate_limited (2.0s remaining)
+2025-12-10 09:30:21 | === Demo end ===
