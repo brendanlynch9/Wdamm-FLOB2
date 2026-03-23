@@ -1,0 +1,36 @@
+Require Import Reals.
+Require Import Lra.
+
+Open Scope R_scope.
+
+(*** 1. THE ONTOLOGICAL CONSTANTS ***)
+Parameter Total_Gamma : R.
+Parameter Aincrad_Threshold : R.
+
+Axiom threshold_pos : Aincrad_Threshold > 0.
+Axiom complexity_inflation : Total_Gamma > Aincrad_Threshold.
+
+(*** 2. THE TERMINAL TRIAD CLOSURE THEOREM ***)
+
+Theorem simulation_resolution :
+  / Total_Gamma < / Aincrad_Threshold.
+Proof.
+  (* 1. Manually construct the positivity witness for Total_Gamma *)
+  assert (H_pos_gamma : 0 < Total_Gamma).
+  { (* lra often fails here if it can't order the transitivity *)
+    apply Rlt_trans with (r2 := Aincrad_Threshold).
+    - exact threshold_pos.
+    - exact complexity_inflation. }
+
+  (* 2. Apply the inversion property *)
+  apply Rinv_lt_contravar.
+  - (* Goal: 0 < Aincrad_Threshold * Total_Gamma *)
+    apply Rmult_lt_0_compat.
+    + exact threshold_pos.
+    + exact H_pos_gamma.
+  - (* Goal: Aincrad_Threshold < Total_Gamma *)
+    exact complexity_inflation.
+Qed.
+
+(*** FINAL VERIFICATION ***)
+Check simulation_resolution.

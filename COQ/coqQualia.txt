@@ -1,0 +1,43 @@
+Require Import Reals.
+Require Import Lra.
+Require Import Psatz.
+
+Open Scope R_scope.
+
+(*** RESOLUTION 37: PERCEPTUAL STABILITY THEOREM (QUALIA) 
+     Reference: [5] Qualia as Perceptual Waveforms (Lynch, 2025)
+***)
+
+Definition Lambda_u : R := 2073045 / 10000000000.
+(* Define the Inverse explicitly to prevent nra recursion *)
+Definition Inv_Lambda : R := 10000000000 / 2073045.
+
+Definition Perceptual_Index (D : R) : R := D * Inv_Lambda.
+
+Definition ACI_Stable (D : R) : Prop :=
+  D <= Inv_Lambda.
+
+Theorem perceptual_stability_non_divergence :
+  forall (D : R),
+  ACI_Stable D ->
+  Perceptual_Index D <= (Inv_Lambda * Inv_Lambda).
+Proof.
+  intros D H_aci.
+  unfold Perceptual_Index, ACI_Stable in *.
+  
+  (* 1. Verify the inverse relationship for the kernel *)
+  assert (H_pos : Inv_Lambda > 0).
+  { unfold Inv_Lambda; lra. }
+  
+  (* 2. nra now sees simple multiplication without recursive division *)
+  nra.
+Qed.
+
+(*** VERIFICATION ***)
+Check perceptual_stability_non_divergence.
+
+
+
+#perceptual_stability_non_divergence
+     : forall D : R,
+ACI_Stable D -> Perceptual_Index D <= Inv_Lambda * Inv_Lambda

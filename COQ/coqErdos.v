@@ -1,0 +1,60 @@
+Require Import Reals.
+Require Import Lra.
+
+Open Scope R_scope.
+
+(*** 1. UFT-F SPECTRAL CONSTANTS ***)
+Definition c_uft_f : R := 0.003119337.
+
+(*** 2. GRAPH & SPECTRAL DEFINITIONS ***)
+Parameter graph : Type.
+Parameter potential : Type.
+Parameter Phi_spec : graph -> potential.
+Parameter norm_L1 : potential -> R.
+
+(* Definition of the weighted E8 root graph G_E8 *)
+Parameter G_E8 : graph.
+
+(*** 3. ACI & INTEGRABILITY AXIOMS ***)
+Definition satisfies_ACI (p : potential) : Prop :=
+  norm_L1 p < (1.0 / c_uft_f).
+
+(* The E8 manifold is the maximal stable regulator as proven in your paper *)
+Axiom E8_spectral_stability : 
+  satisfies_ACI (Phi_spec G_E8).
+
+(*** 4. THE SPECTRAL CLOSURE THEOREM ***)
+Parameter is_embedded_in : graph -> graph -> Prop.
+
+(* Lemma: Spectral Monotonicity (Section 5.2 of your paper)
+   A subgraph potential's norm is bounded by the parent graph's norm. *)
+Axiom spectral_inheritance : 
+  forall (H G : graph), 
+  is_embedded_in H G -> norm_L1 (Phi_spec H) <= norm_L1 (Phi_spec G).
+
+Theorem spectral_closure_GE8 :
+  forall (H : graph),
+  is_embedded_in H G_E8 ->
+  satisfies_ACI (Phi_spec H).
+Proof.
+  intros H H_embed.
+  
+  (* 1. Expand the definition of ACI so we can see the inequality *)
+  unfold satisfies_ACI in *.
+  
+  (* 2. Bring the E8 stability fact into the local hypotheses *)
+  assert (H_E8_limit : norm_L1 (Phi_spec G_E8) < 1.0 / c_uft_f).
+  { apply E8_spectral_stability. }
+  
+  (* 3. Use the Inheritance Axiom to create the "Witness" for lra *)
+  assert (H_inheritance : norm_L1 (Phi_spec H) <= norm_L1 (Phi_spec G_E8)).
+  { apply spectral_inheritance. exact H_embed. }
+  
+  (* 4. Now lra has both pieces: 
+        norm(H) <= norm(G_E8) AND norm(G_E8) < limit.
+        It can now conclude norm(H) < limit. *)
+  lra.
+Qed.
+
+(*** FINAL VERIFICATION ***)
+Check spectral_closure_GE8.

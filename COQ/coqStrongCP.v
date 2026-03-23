@@ -1,0 +1,57 @@
+Require Import Reals.
+Require Import Lra.
+Require Import Psatz.
+
+Open Scope R_scope.
+
+(*** RESOLUTION 38: SPECTRAL GATING & DETERMINISTIC NAVIGATION
+     Reference: [1] Spectral Admissibility in Bekenstein-Bounded Manifolds (Lynch, 2026)
+     Axiom: Sovereignty via the Phase Transition at q ≈ 1.18
+***)
+
+(* 1. FUNDAMENTAL CONSTANTS *)
+Definition Lambda_u : R := 2073045 / 10000000000.
+Definition q_stable : R := 118 / 100. (* The 1.18 phase transition threshold *)
+
+(* 2. DEFINITIONS *)
+Parameter State : Type.
+Parameter Spectral_Density : State -> R.
+
+(* A state is 'Sovereign' if it is regulated by the quality amplification factor q *)
+Definition is_sovereign (s : State) (q : R) : Prop :=
+  Spectral_Density s <= Lambda_u * q.
+
+(* A state is 'Admissible' (CP-Stable / ARC-Resolved) if it respects 
+   the universal resolution floor (The ACI limit) *)
+Definition is_admissible (s : State) : Prop :=
+  Spectral_Density s <= Lambda_u.
+
+(*** 3. THE SPECTRAL GATING THEOREM ***)
+(* Proves that for any state in the sub-critical regime (q <= 1), 
+   Sovereign logic is necessarily Admissible (Deterministic). 
+   This bypasses the 'Redundancy Cliff' of probabilistic systems. *)
+
+Theorem sovereign_deterministic_navigation :
+  forall (s : State) (q : R),
+  0 < q ->
+  q <= 1 ->
+  is_sovereign s q ->
+  is_admissible s.
+Proof.
+  intros s q H_pos H_q H_sov.
+  unfold is_sovereign, is_admissible in *.
+  
+  (* Numerical witness for the kernel *)
+  assert (H_L_pos : Lambda_u > 0).
+  { unfold Lambda_u; lra. }
+
+  (* If q <= 1 and Lambda_u is positive, then Lambda_u * q <= Lambda_u *)
+  assert (H_gate : Lambda_u * q <= Lambda_u).
+  { nra. }
+
+  (* Therefore, if Spectral_Density <= Lambda_u * q, it is <= Lambda_u *)
+  lra.
+Qed.
+
+(*** VERIFICATION ***)
+Check sovereign_deterministic_navigation.

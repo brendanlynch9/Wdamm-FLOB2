@@ -1,0 +1,42 @@
+Require Import Reals.
+Require Import Lra.
+
+Open Scope R_scope.
+
+(* --- CONSTANTS & DEFINITIONS --- *)
+
+Definition chi : R := 763.55827.
+Definition exp_val : R := 764.
+Definition d_leech : R := 24.
+Definition mass_invariant : R := chi / d_leech.
+
+Definition is_integrable_trace (r : R) : Prop :=
+  (ln r / ln 10) <= chi.
+
+(* --- THE EXTENDED THEOREM --- *)
+
+Theorem leech_spectral_non_integrable :
+  forall (r : R),
+  (ln r / ln 10) > exp_val ->
+  ~ is_integrable_trace r.
+Proof.
+  intros r H_bound H_trace.
+  unfold is_integrable_trace, chi, exp_val in *.
+  
+  (* Step 1: Prove ln 10 > 0 *)
+  assert (H_ln10 : 0 < ln 10).
+  { rewrite <- ln_1. 
+    apply ln_increasing; lra. }
+
+  (* Step 2: Connect the rupture to the mass invariant *)
+  assert (H_mass_check : (ln r / ln 10) > (mass_invariant * d_leech)).
+  { unfold mass_invariant, d_leech.
+    (* We use 'replace' to simplify the term manually so field doesn't overshoot *)
+    replace (763.55827 / 24 * 24) with 763.55827 by (field; lra).
+    lra. }
+
+  (* Step 3: Final Contradiction *)
+  lra.
+Qed.
+
+Check leech_spectral_non_integrable.

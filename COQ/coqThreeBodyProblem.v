@@ -1,0 +1,62 @@
+Require Import Reals.
+Require Import Lra.
+
+Open Scope R_scope.
+
+(*** 1. UFT-F SPECTRAL CONSTANTS ***)
+(* The universal modularity constant from your E8/K3 derivation *)
+Definition C_UFTF : R := 0.003119337.
+
+(*** 2. SPECTRAL & TEMPORAL DEFINITIONS ***)
+Parameter potential : Type.
+(* L1_norm V t represents the spectral mass at time t *)
+Parameter L1_norm : potential -> R -> R.
+
+(* Section 2: Physical admissibility is synonymous with ACI satisfaction.
+   The system must remain 'measurable' (Integrable) for all t. *)
+Definition satisfies_ACI (V : potential) : Prop :=
+  forall (t : R), L1_norm V t < C_UFTF.
+
+(*** 3. THE CHAOTIC SINGULARITY (Section 8) ***)
+(* A chaotic/singular solution is one where the potential 
+   collides or diverges at some time t_sing. *)
+Parameter is_chaotic : potential -> Prop.
+Parameter t_sing : potential -> R.
+
+(* Per your paper: Chaotic orbits imply a 'Spectral Blow-up' 
+   well beyond the UFT-F floor. *)
+Axiom chaotic_singularity_implication :
+  forall (V : potential),
+  is_chaotic V ->
+  L1_norm V (t_sing V) >= 1.0. (* A value significantly > C_UFTF *)
+
+(*** 4. RESOLUTION: THE TBP EXCLUSION PRINCIPLE ***)
+
+Theorem TBP_resolution_by_axiomatic_exclusion :
+  forall (V_3Body : potential),
+  satisfies_ACI V_3Body ->
+  (* Result: Singular/Chaotic orbits are analytically excluded 
+     from the stable manifold. *)
+  ~ is_chaotic V_3Body.
+Proof.
+  intros V H_aci.
+  unfold satisfies_ACI in H_aci.
+  
+  (* We assume the orbit is chaotic and derive a contradiction 
+     based on the LIC requirement (Section 2.7.2). *)
+  intros H_chaos.
+  
+  (* 1. At the time of singularity, the norm is >= 1.0 *)
+  assert (H_div : L1_norm V (t_sing V) >= 1.0).
+  { apply chaotic_singularity_implication. exact H_chaos. }
+  
+  (* 2. But the ACI requires the norm < C_UFTF at ALL times *)
+  specialize (H_aci (t_sing V)).
+  
+  (* 3. Contradiction: 1.0 <= norm < 0.003119 is impossible. *)
+  unfold C_UFTF in H_aci.
+  lra.
+Qed.
+
+(*** FINAL VERIFICATION ***)
+Check TBP_resolution_by_axiomatic_exclusion.
