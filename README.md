@@ -1,4 +1,4 @@
-# Wdamm-FLOB2
+# Wdamm-FLOB2 = Way Finding Deterministic axiomatic mathematical mapping of the Functional library of Babel.
 Cleaned up version of the original wdamm FLob
 
 10.5281/zenodo.17566371
