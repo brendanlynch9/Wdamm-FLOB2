@@ -1,0 +1,145 @@
+(* UFT-F Formal Verification: Inadmissibility of Intermediate Cardinals 
+   Target: Metric-Spectral Saturation and Functorial Breakdown 
+*)
+
+Require Import Reals.
+Require Import Lra.
+Open Scope R_scope.
+
+(* --- UFT-F Constants and Axioms --- *)
+
+Parameter chi : R. 
+Axiom chi_val : chi > 763.
+
+(* The 1/120 floor is defined transparently to allow for reduction *)
+Definition density_floor : R := 1 / 120.
+
+(* The Lynch-Marchenko Spectral Operator T mapping density to min eigenvalue *)
+Parameter spectral_min_eigenvalue : R -> R. 
+
+(* Axiom of Spectral Admissibility (ASA) 
+   Exceeding the floor triggers spectral collapse (lambda_min -> 0) *)
+Axiom ASA : forall (alpha : R),
+  alpha > density_floor -> spectral_min_eigenvalue alpha = 0.
+
+(* Definition of Metric Injectivity 
+   Injectivity requires a strictly positive spectral signature *)
+Definition is_injective (alpha : R) : Prop :=
+  spectral_min_eigenvalue alpha > 0.
+
+(* --- The Inadmissibility Theorem --- *)
+
+Theorem intermediate_cardinal_inadmissible :
+  forall (alpha_intermediate : R),
+  alpha_intermediate = 1.5 * density_floor -> 
+  is_injective alpha_intermediate -> False.
+Proof.
+  intros alpha H_size H_inj.
+  
+  (* 1. Evaluate the density violation. 
+     Using lra handles the 1.5 * (1/120) > 1/120 comparison 
+     automatically by unfolding density_floor. *)
+  assert (H_violation : alpha > density_floor).
+  { rewrite H_size. 
+    unfold density_floor. 
+    lra. 
+  }
+
+  (* 2. Apply ASA to trigger Spectral Collapse *)
+  assert (H_collapse : spectral_min_eigenvalue alpha = 0).
+  { apply ASA. exact H_violation. }
+
+  (* 3. Terminal Contradiction 
+     Injectivity (0 > 0) is a logical impossibility. *)
+  unfold is_injective in H_inj.
+  rewrite H_collapse in H_inj.
+  
+  (* Finalize: this will clear the goal panel and output "No more goals" *)
+  lra.
+Qed.
+
+(* Validation Check: 
+   Print the theorem to verify the proof term is complete. *)
+Print intermediate_cardinal_inadmissible.
+
+
+
+
+
+
+intermediate_cardinal_inadmissible = 
+fun (alpha : R) (H_size : alpha = 1.5 * density_floor)
+  (H_inj : is_injective alpha)
+=>
+let H_violation : alpha > density_floor :=
+  eq_ind_r (fun alpha0 : R => alpha0 > density_floor)
+  (((let __arith : 1.5 * (1 * / 120) > 1 * / 120 :=
+  let __wit := nil in
+let __varmap := VarMap.Empty in
+let __ff :=
+  Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc
+  (RMicromega.CMult
+  (RMicromega.CQ
+  {|
+  QArith_base.Qnum := 15;
+QArith_base.Qden := 10
+|})
+  (RMicromega.CMult (RMicromega.CZ 1)
+  (RMicromega.CInv (RMicromega.CZ 120))));
+RingMicromega.Fop := RingMicromega.OpGt;
+RingMicromega.Frhs :=
+  EnvRing.PEc
+  (RMicromega.CMult (RMicromega.CZ 1)
+  (RMicromega.CInv (RMicromega.CZ 120)))
+|}
+  tt
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <: RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith)
+:
+1.5 * (1 / 120) > 1 / 120)
+:
+1.5 * density_floor > density_floor)
+  H_size
+  in
+let H_collapse : spectral_min_eigenvalue alpha = 0 :=
+  ASA alpha H_violation in
+let H_inj0 : 0 > 0 :=
+  eq_ind (spectral_min_eigenvalue alpha) (fun r : R => r > 0) H_inj
+  0 H_collapse
+  in
+(let __arith : forall __p1 : Prop, 0 > 0 -> __p1 :=
+  fun __p1 : Prop =>
+let __wit := nil in
+let __varmap := VarMap.Empty in
+let __ff :=
+  Tauto.IMPL
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs := EnvRing.PEc (RMicromega.CZ 0);
+RingMicromega.Fop := RingMicromega.OpGt;
+RingMicromega.Frhs := EnvRing.PEc (RMicromega.CZ 0)
+|}
+  tt)
+  None
+  (Tauto.X Tauto.isProp __p1)
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <: RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith False H_inj0)
+:
+False
+     : forall alpha_intermediate : R,
+alpha_intermediate = 1.5 * density_floor ->
+is_injective alpha_intermediate -> False
+
+Arguments intermediate_cardinal_inadmissible
+  alpha_intermediate%R_scope _ _
