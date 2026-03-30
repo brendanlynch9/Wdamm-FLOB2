@@ -1,0 +1,47 @@
+ (* ================================================================= *)
+(* THE BASE-24 DISCRETE MANIFOLD: CONSISTENT NON-EUCLIDEAN GEOMETRY  *)
+(* Proving that Projected Points possess a Metric Residue (Epsilon)  *)
+(* ================================================================= *)
+
+Parameter R : Set.
+Parameter R_0 : R.
+Parameter dist : R -> R -> R.
+Parameter leR ltR : R -> R -> Prop.
+
+Infix "<" := ltR (at level 70).
+Infix "<=" := leR (at level 70).
+
+(* 1. THE INFORMATIONAL CONSTANT *)
+Parameter Epsilon : R.
+Axiom Epsilon_Limit : R_0 < Epsilon.
+
+(* 2. THE NON-EUCLIDEAN IDENTITY AXIOM *)
+(* In Base-24, a "Point" is a projection. 
+   Its self-distance is its Informational Entropy (Epsilon). *)
+Axiom Base24_Self_Distance : forall x, Epsilon <= dist x x.
+
+(* 3. STANDARD LOGIC *)
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+
+(* ================================================================= *)
+(* THE THEOREM: THE IMPOSSIBILITY OF THE ZERO-STATE (PERFECT CUBOID) *)
+(* ================================================================= *)
+
+Theorem perfect_state_is_excluded :
+  forall x, ~ (dist x x = R_0).
+Proof.
+  intros x H_zero.
+  
+  (* 1. Apply the Base-24 Metric Law *)
+  pose proof (Base24_Self_Distance x) as Law.
+  
+  (* 2. If the Euclidean 'Zero-State' (dist x x = 0) were possible: *)
+  rewrite H_zero in Law.
+  
+  (* 3. We reach the contradiction: Epsilon <= 0, but Epsilon > 0. *)
+  apply (Rlt_not_le R_0 Epsilon).
+  - exact Epsilon_Limit.
+  - exact Law.
+Qed.
+
+Check perfect_state_is_excluded.

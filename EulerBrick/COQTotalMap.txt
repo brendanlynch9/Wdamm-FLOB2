@@ -1,0 +1,34 @@
+ (* PROJECT: UFT-F MANIFOLD VERIFICATION 
+   FILE 1/50: TOTAL CLASSIFICATION (ZERO ERRORS)
+*)
+
+Require Import ZArith.
+Open Scope Z_scope.
+
+Definition manifold_dist (x : Z) : Z :=
+  match x mod 8 with
+  | 1 | 3 | 5 | 7 => 1
+  | 2 | 6         => 4
+  | 0 | 4         => 0
+  | _             => 0
+  end.
+
+Theorem uft_f_total_map : 
+  forall x, 
+  {manifold_dist x = 1} + {manifold_dist x = 4} + {manifold_dist x = 0}.
+Proof.
+  intros x. 
+  unfold manifold_dist.
+  (* We use 'remember' to keep the connection between x and r *)
+  remember (x mod 8) as r.
+  
+  (* Instead of refine, we use a case-analysis that Coq can see is exhaustive *)
+  destruct r as [|p|p]; try (right; reflexivity).
+  
+  (* This destructs the positive integer p into its specific bits (mod 8 behavior) *)
+  repeat (destruct p as [p|p| ]; try (left; left; reflexivity); 
+                              try (left; right; reflexivity); 
+                              try (right; reflexivity)).
+Qed.
+
+Check uft_f_total_map.

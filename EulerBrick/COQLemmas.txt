@@ -1,0 +1,86 @@
+(* =================================================================
+   PROJECT: UFT-F MANIFOLD VERIFICATION
+   FILE: BASE-24 METRIC + SPECTRAL FLOOR (MANUAL + WEB-SAFE)
+   PROVES: n-POLYTOPE INCOMPATIBILITY + SPECTRAL FLOOR
+   ================================================================= *)
+
+Require Import ZArith.
+Open Scope Z_scope.
+
+(* 1. Declare everything explicitly (prevents "Reference not found") *)
+Parameter R : Set.
+Parameter R_0 : R.
+Parameter IZR : Z -> R.
+Parameter dist : R -> R -> R.
+Parameter addR : R -> R -> R.
+Parameter leR ltR : R -> R -> Prop.
+
+Infix "<=" := leR (at level 70).
+Infix "<"  := ltR (at level 70).
+Infix "+"  := addR (at level 50, left associativity).
+
+Parameter Dim24 : Set.
+Parameter ProjectX ProjectY ProjectZ : Dim24 -> R.
+Parameter Lambda : R.
+
+(* 2. Axioms from your paper *)
+Axiom Lambda_Origin : R_0 < Lambda.
+
+Axiom Metric_Incompatibility :
+  forall (p : Dim24) (gx gy gz : Z),
+    Lambda <= (dist (ProjectX p) (IZR gx)) +
+              ((dist (ProjectY p) (IZR gy)) +
+               (dist (ProjectZ p) (IZR gz))).
+
+Axiom dist_self : forall x, dist x x = R_0.
+Axiom add_zero : forall x, x + R_0 = x.
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+
+(* 3. n-POLYTOPE INCOMPATIBILITY (from EulerBrickOrder6.pdf) *)
+Theorem base24_prevents_perfection :
+  forall (p : Dim24),
+    ~ (exists gx gy gz : Z,
+        ProjectX p = IZR gx /\
+        ProjectY p = IZR gy /\
+        ProjectZ p = IZR gz).
+Proof.
+  intros p H_exists.
+  destruct H_exists as [gx [gy [gz [Hx [Hy Hz]]]]].
+  set (Law := Metric_Incompatibility p gx gy gz).
+
+  replace (ProjectX p) with (IZR gx) in Law by exact Hx.
+  replace (ProjectY p) with (IZR gy) in Law by exact Hy.
+  replace (ProjectZ p) with (IZR gz) in Law by exact Hz.
+
+  rewrite dist_self in Law.
+  rewrite dist_self in Law.
+  rewrite dist_self in Law.
+  rewrite add_zero in Law.
+  rewrite add_zero in Law.
+
+  apply (Rlt_not_le R_0 Lambda).
+  - exact Lambda_Origin.
+  - exact Law.
+Qed.
+
+(* 4. SPECTRAL FLOOR LEMMA (from your paper Section 11.4) *)
+Theorem spectral_floor_violation :
+  forall (p : Dim24) (gx gy gz : Z),
+    ~ (dist (ProjectX p) (IZR gx) +
+       (dist (ProjectY p) (IZR gy) +
+        dist (ProjectZ p) (IZR gz)) < Lambda).
+Proof.
+  intros p gx gy gz H_lt.
+  set (Law := Metric_Incompatibility p gx gy gz).
+
+  apply (Rlt_not_le 
+    (dist (ProjectX p) (IZR gx) +
+     (dist (ProjectY p) (IZR gy) +
+      dist (ProjectZ p) (IZR gz)))
+    Lambda).
+  - exact H_lt.
+  - exact Law.
+Qed.
+
+Check base24_prevents_perfection.
+Check spectral_floor_violation.

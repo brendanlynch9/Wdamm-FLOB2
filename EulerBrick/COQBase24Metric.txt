@@ -1,0 +1,76 @@
+  (* ================================================================= *)
+(* THE BASE-24 METRIC: STM-SAFE MANUAL PROOF                         *)
+(* This version avoids Tactic Engine overhead to prevent STM crashes *)
+(* ================================================================= *)
+
+Require Import ZArith.
+Open Scope Z_scope.
+
+Parameter R : Set.
+Parameter R_0 : R.
+Parameter IZR : Z -> R.
+Parameter dist : R -> R -> R.
+Parameter addR : R -> R -> R.
+Parameter leR ltR : R -> R -> Prop.
+
+Infix "<=" := leR (at level 70).
+Infix "<" := ltR (at level 70).
+Infix "+" := addR.
+
+(* 1. Fundamental Constants *)
+Parameter Lambda : R.
+Axiom Lambda_Origin : R_0 < Lambda.
+
+(* 2. Projections *)
+Parameter Dim24 : Set.
+Parameter ProjectX ProjectY ProjectZ : Dim24 -> R.
+
+(* 3. The Core Incompatibility Axiom *)
+Axiom Metric_Incompatibility : forall (p : Dim24) (gx gy gz : Z),
+  Lambda <= (dist (ProjectX p) (IZR gx)) + 
+            ((dist (ProjectY p) (IZR gy)) + 
+             (dist (ProjectZ p) (IZR gz))).
+
+(* 4. Minimal Manual Axioms (No Tactics needed) *)
+Axiom dist_self : forall x, dist x x = R_0.
+Axiom add_zero : forall x, x + R_0 = x.
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+
+(* ================================================================= *)
+(* THE THEOREM: BUILDING THE TERM MANUALLY                           *)
+(* ================================================================= *)
+
+Theorem base24_prevents_perfection :
+  forall (p : Dim24),
+  ~ (exists gx gy gz : Z, 
+      ProjectX p = IZR gx /\ 
+      ProjectY p = IZR gy /\ 
+      ProjectZ p = IZR gz).
+Proof.
+  intros p H_exists.
+  (* Manually destructing to keep STM memory low *)
+  destruct H_exists as [gx [gy [gz [Hx [Hy Hz]]]]].
+  
+  (* We build the contradiction term step-by-step *)
+  set (Law := Metric_Incompatibility p gx gy gz).
+  
+  (* Manually simplifying the Law using 'replace' instead of 'rewrite' 
+     (Replace is more stable for the STM) *)
+  replace (ProjectX p) with (IZR gx) in Law by exact Hx.
+  replace (ProjectY p) with (IZR gy) in Law by exact Hy.
+  replace (ProjectZ p) with (IZR gz) in Law by exact Hz.
+  
+  (* Final manual reduction of the metric distance *)
+  rewrite dist_self in Law.
+  rewrite dist_self in Law.
+  rewrite dist_self in Law.
+  rewrite add_zero in Law.
+  rewrite add_zero in Law.
+  
+  (* Closure *)
+  apply (Rlt_not_le R_0 Lambda).
+  - exact Lambda_Origin.
+  - exact Law.
+Qed.
+
+Check base24_prevents_perfection.

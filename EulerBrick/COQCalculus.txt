@@ -1,0 +1,78 @@
+ (* ================================================================= *)
+(* THE 4TH AXIS CALCULUS – MANUAL SPECTRAL FORMALIZATION             *)
+(* 100% Self-Contained: No Type Ambiguity (No nat/R confusion)       *)
+(* ================================================================= *)
+
+Parameter R Z : Set.
+
+Parameter R_0 : R.
+Parameter Rabs : R -> R.
+Parameter addR subR mulR divR : R -> R -> R.
+Parameter IZR : Z -> R.
+Parameter Z_0 : Z.
+
+Parameter leR ltR : R -> R -> Prop.
+Infix "<=" := leR (at level 70).
+Infix "<" := ltR (at level 70).
+
+(* Manual Operator Definitions to avoid 'nat' conflicts *)
+Definition R_plus (x y : R) : R := addR x y.
+Definition R_sub (x y : R) : R := subR x y.
+Definition R_div (x y : R) : R := divR x y.
+
+Axiom Rsub_diag : forall x, subR x x = R_0.
+Axiom Rabs_R0 : Rabs R_0 = R_0.
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+Axiom IZR_Z0 : IZR Z_0 = R_0.
+
+(* --- THE 4TH AXIS (THE SPECTRAL FLOOR) --- *)
+Parameter Lambda : R.
+Axiom lambda_pos : R_0 < Lambda.
+
+(* Definition: A point is Admissible if it is at least Lambda away from Z *)
+Definition Admissible (x : R) : Prop :=
+  forall (g : Z), Lambda <= Rabs (subR x (IZR g)).
+
+(* Definition: The Spectral Derivative (Lambda-Derivative) *)
+(* It measures change over the smallest possible admissible gap. *)
+Definition LambdaDerivative (f : R -> R) (x : R) (f' : R) : Prop :=
+  Admissible x /\
+  exists (h : R), 
+    Admissible (addR x h) /\ 
+    f' = R_div (subR (f (addR x h)) (f x)) h.
+
+(* ================================================================= *)
+(* THE SINGULARITY THEOREM                                           *)
+(* ================================================================= *)
+(* Proves that at any Diophantine "Solution" (Integer), the          *)
+(* Calculus of the universe is undefined.                            *)
+
+Theorem singularity_is_non_differentiable :
+  forall (f : R -> R) (g : Z),
+  ~ (exists f', LambdaDerivative f (IZR g) f').
+Proof.
+  intros f g H_exists.
+  destruct H_exists as [f' H_LD].
+  
+  (* 1. Unpack the Lambda-Derivative definition *)
+  unfold LambdaDerivative in H_LD.
+  destruct H_LD as [H_adm_x [h [H_adm_xh H_slope]]].
+  
+  (* 2. Prove that the Integer point (IZR g) is NOT Admissible *)
+  assert (H_not_admissible : ~ Admissible (IZR g)).
+  {
+    intro H_is_adm.
+    unfold Admissible in H_is_adm.
+    (* Focus on the gap at the integer 'g' itself *)
+    set (H_gap := H_is_adm g).
+    rewrite Rsub_diag in H_gap.
+    rewrite Rabs_R0 in H_gap.
+    (* Conflict: Lambda <= 0 vs Lambda > 0 *)
+    apply (Rlt_not_le R_0 Lambda lambda_pos H_gap).
+  }
+  
+  (* 3. The derivative requires Admissibility, which we just disproved *)
+  contradiction.
+Qed.
+
+Check singularity_is_non_differentiable.

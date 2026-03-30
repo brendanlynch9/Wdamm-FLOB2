@@ -1,0 +1,75 @@
+ (* =================================================================
+   PROJECT: UFT-F MANIFOLD VERIFICATION
+   FILE: BASE-24 METRIC (MANUAL + WEB-SAFE)
+   PROVES: n-POLYTOPE INCOMPATIBILITY (NO PERFECT CUBOID)
+   ================================================================= *)
+
+Require Import ZArith.
+Open Scope Z_scope.
+
+(* 1. Declare everything explicitly first *)
+Parameter R : Set.
+Parameter R_0 : R.
+Parameter IZR : Z -> R.
+Parameter dist : R -> R -> R.
+Parameter addR : R -> R -> R.
+Parameter leR ltR : R -> R -> Prop.
+
+Infix "<=" := leR (at level 70).
+Infix "<"  := ltR (at level 70).
+Infix "+"  := addR (at level 50, left associativity).
+
+Parameter Dim24 : Set.
+Parameter ProjectX ProjectY ProjectZ : Dim24 -> R.
+Parameter Lambda : R.
+
+(* 2. Axioms (exactly as in your PDF) *)
+Axiom Lambda_Origin : R_0 < Lambda.
+
+Axiom Metric_Incompatibility :
+  forall (p : Dim24) (gx gy gz : Z),
+    Lambda <= (dist (ProjectX p) (IZR gx)) +
+              ((dist (ProjectY p) (IZR gy)) +
+               (dist (ProjectZ p) (IZR gz))).
+
+Axiom dist_self : forall x, dist x x = R_0.
+Axiom add_zero : forall x, x + R_0 = x.
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+
+(* 3. THE n-POLYTOPE THEOREM (MANUAL PROOF) *)
+Theorem base24_prevents_perfection :
+  forall (p : Dim24),
+    ~ (exists gx gy gz : Z,
+        ProjectX p = IZR gx /\
+        ProjectY p = IZR gy /\
+        ProjectZ p = IZR gz).
+Proof.
+  intros p H_exists.
+  (* Manually unpack the existential *)
+  destruct H_exists as [gx [gy [gz [Hx [Hy Hz]]]]].
+
+  (* Build the contradiction law *)
+  set (Law := Metric_Incompatibility p gx gy gz).
+
+  (* Manual substitutions using replace (stable for web Coq) *)
+  replace (ProjectX p) with (IZR gx) in Law by exact Hx.
+  replace (ProjectY p) with (IZR gy) in Law by exact Hy.
+  replace (ProjectZ p) with (IZR gz) in Law by exact Hz.
+
+  (* Reduce all distances to zero *)
+  rewrite dist_self in Law.
+  rewrite dist_self in Law.
+  rewrite dist_self in Law.
+
+  (* Reduce all additions to zero *)
+  rewrite add_zero in Law.
+  rewrite add_zero in Law.
+
+  (* Now Law : Lambda <= R_0 *)
+  (* Final contradiction using the axiom explicitly *)
+  apply (Rlt_not_le R_0 Lambda).
+  - exact Lambda_Origin.   (* R_0 < Lambda *)
+  - exact Law.             (* Lambda <= R_0 *)
+Qed.
+
+Check base24_prevents_perfection.

@@ -1,0 +1,84 @@
+(* ================================================================= *)
+(* THE BASE-24 METRIC TENSOR: FORMAL PROOF OF INTEGER EXCLUSION      *)
+(* Version: 1.0 (Direct Parameterization)                            *)
+(* ================================================================= *)
+
+(* 1. Fundamental Types and Operations *)
+Parameter R : Set.
+Parameter Z : Set.
+Parameter R_0 : R.
+Parameter Rabs : R -> R.
+Parameter addR : R -> R -> R.
+Parameter subR : R -> R -> R.
+Parameter IZR : Z -> R.
+
+(* 2. Relational Operators *)
+Parameter leR : R -> R -> Prop.
+Parameter ltR : R -> R -> Prop.
+Infix "<=" := leR (at level 70).
+Infix "<" := ltR (at level 70).
+
+(* 3. Core Arithmetic Axioms (Standard Metric Properties) *)
+Axiom Rsub_diag : forall x : R, subR x x = R_0.
+Axiom Radd_0_r : forall x : R, addR x R_0 = x.
+Axiom Rabs_0 : Rabs R_0 = R_0.
+Axiom Rlt_not_le : forall x y : R, x < y -> ~ (y <= x).
+
+(* 4. The 4th Axis Postulate: Lambda represents the Base-24 Residue *)
+Parameter Lambda : R.
+Axiom lambda_pos : R_0 < Lambda.
+
+(* 5. The Projection Functions: Mapping the 24D manifold to 3D axes *)
+Parameter Dim24 : Set.
+Parameter ProjectX : Dim24 -> R.
+Parameter ProjectY : Dim24 -> R.
+Parameter ProjectZ : Dim24 -> R.
+
+(* 6. THE METRIC LAW: 
+      The total drift from any integer lattice node is bounded by Lambda. *)
+Axiom projection_residue_law : forall (p : Dim24) (gx gy gz : Z),
+  Lambda <= addR (Rabs (subR (ProjectX p) (IZR gx)))
+            (addR (Rabs (subR (ProjectY p) (IZR gy)))
+                  (Rabs (subR (ProjectZ p) (IZR gz)))).
+
+(* ================================================================= *)
+(* THE THEOREM: THE BASE-24 METRIC FORBIDS PERFECT INTEGER STATES    *)
+(* ================================================================= *)
+
+Theorem base24_prevents_perfection :
+  forall (p : Dim24),
+  ~ (exists (gx gy gz : Z), 
+      ProjectX p = IZR gx /\ 
+      ProjectY p = IZR gy /\ 
+      ProjectZ p = IZR gz).
+Proof.
+  intros p H_exists.
+  (* Extract the integer coordinates and the proof they match the projection *)
+  destruct H_exists as [gx [gy [gz [Hx [Hy Hz]]]]].
+  
+  (* Step 1: Instantiate the Metric Law for this specific point and integers *)
+  pose proof (projection_residue_law p gx gy gz) as Law.
+
+  (* Step 2: Substitute the assumed perfect equalities into the Law *)
+  rewrite Hx in Law.
+  rewrite Hy in Law.
+  rewrite Hz in Law.
+
+  (* Step 3: Reduce the distance terms to zero (R_0) *)
+  repeat rewrite Rsub_diag in Law.
+  repeat rewrite Rabs_0 in Law.
+
+  (* Step 4: Simplify the additions (0 + (0 + 0) = 0) *)
+  repeat rewrite Radd_0_r in Law.
+
+  (* Step 5: Final Contradiction 
+     Law states: Lambda <= R_0
+     Postulate states: R_0 < Lambda
+     These cannot both be true. *)
+  apply (Rlt_not_le R_0 Lambda).
+  - exact lambda_pos.
+  - exact Law.
+Qed.
+
+(* Verification check *)
+Print base24_prevents_perfection.

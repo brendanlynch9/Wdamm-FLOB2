@@ -1,0 +1,50 @@
+ (* ================================================================ *)
+(* A REAL DISCRETE GAP: FULLY CHECKABLE                             *)
+(* ================================================================ *)
+
+Require Import ZArith.
+Require Import Lia.
+
+Open Scope Z_scope.
+
+(* 1. "Lattice": integers *)
+Definition V := Z.
+
+(* 2. Projection: identity *)
+Definition proj (v : V) : Z := v.
+
+(* 3. Distance: absolute value *)
+Definition dist (x : Z) : Z := Z.abs x.
+
+(* ================================================================ *)
+(* CORE LEMMA: INTEGER GAP                                          *)
+(* ================================================================ *)
+
+Lemma integer_gap :
+  forall v : Z, v <> 0 -> 1 <= Z.abs v.
+Proof.
+  intros v H.
+  destruct v.
+  - contradiction.
+  - simpl. lia.
+  - simpl. lia.
+Qed.
+
+(* ================================================================ *)
+(* MAIN THEOREM                                                     *)
+(* ================================================================ *)
+
+Theorem projected_gap :
+  forall v : Z, v <> 0 -> dist (proj v) <> 0.
+Proof.
+  intros v H.
+  unfold dist, proj.
+
+  pose proof (integer_gap v H) as Hgap.
+
+  intro Hzero.
+  rewrite Hzero in Hgap.
+  lia.
+Qed.
+
+Check projected_gap.

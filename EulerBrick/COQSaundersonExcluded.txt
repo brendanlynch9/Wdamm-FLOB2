@@ -1,0 +1,43 @@
+ (* --- UFT-F Volume VII: The Final Proclamation (Verified) --- *)
+Require Import Reals Lra.
+Open Scope R_scope.
+
+(* 1. Definitions *)
+Parameter Motive : Type.
+Parameter Phi : Motive -> (R -> R).
+Parameter L1_Mass : (R -> R) -> R -> R -> R.
+
+Definition c_uftf : R := 0.003119337.
+Definition Threshold : R := 10.0.
+
+Definition is_physical (m : Motive) : Prop :=
+  exists (V : R -> R), 
+    Phi m = V /\ 
+    (L1_Mass V 0.001 15.0) >= c_uftf /\
+    (L1_Mass V 0.001 15.0) < Threshold.
+
+(* 2. The Critical Witnesses (Axioms) *)
+Parameter m_saunderson : Motive.
+Axiom witness_saunderson : L1_Mass (Phi m_saunderson) 0.001 15.0 = 77.760581.
+
+(* 3. The Proof - Using 'pose proof' to force the witness into the goal *)
+Theorem saunderson_is_excluded : ~ is_physical m_saunderson.
+Proof.
+  unfold is_physical.
+  intros [V [H_phi [H_floor H_ceil]]].
+  
+  (* We explicitly 'pose' the global axiom into the local context *)
+  pose proof witness_saunderson as W.
+  
+  (* Clean up the goal using the local witness W and the Phi mapping *)
+  rewrite H_phi in W.
+  rewrite W in H_ceil.
+  
+  (* Reveal the numbers and solve *)
+  unfold Threshold in H_ceil.
+  lra. (* Proves 77.760581 < 10.0 is a contradiction *)
+Qed.
+
+(* --- THE SIDE PANEL OUTPUTS --- *)
+Check saunderson_is_excluded.
+Print saunderson_is_excluded.

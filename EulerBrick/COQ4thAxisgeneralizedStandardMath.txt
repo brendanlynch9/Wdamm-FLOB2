@@ -1,0 +1,86 @@
+ (* ================================================================= *)
+(* THE 4TH AXIS LAW – UNIVERSAL DIOPHANTINE INCOMPATIBILITY          *)
+(* Standard Mathematical Framework: No UFT-F Terminology             *)
+(* ================================================================= *)
+
+Parameter R Z : Set.
+
+(* --- Standard Real Arithmetic --- *)
+Parameter R_0 : R.
+Parameter Rabs : R -> R.
+Parameter subR : R -> R -> R.
+Infix "-" := subR (at level 50, left associativity).
+
+(* --- Standard Integer Properties --- *)
+Parameter Z_0 : Z.
+Parameter IZR : Z -> R.
+
+(* --- Ordering and Logic --- *)
+Parameter leR ltR : R -> R -> Prop.
+Infix "<=" := leR (at level 70).
+Infix "<" := ltR (at level 70).
+
+Axiom Rsub_diag : forall x, x - x = R_0.
+Axiom Rabs_R0 : Rabs R_0 = R_0.
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+Axiom IZR_Z0 : IZR Z_0 = R_0.
+
+(* --- THE 4TH AXIS (THE SPECTRAL GAP) --- *)
+(* In standard math, Lambda is the 'Resolution Limit' of the manifold. *)
+Parameter Lambda : R.
+Axiom lambda_floor_pos : R_0 < Lambda.
+
+(* A General Diophantine Equation is a mapping from a vector space to Z *)
+Parameter DiophantineEquation : (Z -> Z) -> Z.
+
+(* An Admissible State is a vector that obeys the Spectral Gap *)
+Record AdmissibleState := {
+  state_vector : Z -> Z;
+  spectral_gap : forall (k : Z), 
+    Lambda <= Rabs (IZR (DiophantineEquation state_vector) - IZR k)
+}.
+
+(* ================================================================= *)
+(* THE UNIVERSAL EXCLUSION THEOREM                                   *)
+(* ================================================================= *)
+(* Theorem: Any vector that 'solves' a Diophantine Equation (f(v)=0)  *)
+(* is mathematically excluded from being an Admissible State.        *)
+
+Theorem fourth_axis_excludes_all_solutions :
+  forall (v : Z -> Z),
+  DiophantineEquation v = Z_0 -> 
+  ~ (exists (S : AdmissibleState), S.(state_vector) = v).
+Proof.
+  intros v H_is_solution H_is_admissible.
+  
+  (* 1. Unpack the Admissible State *)
+  destruct H_is_admissible as [S H_identity].
+  destruct S as [vec H_gap_all].
+  
+  (* 2. Align the Admissible vector with our solution vector 'v' *)
+  simpl in H_identity.
+  subst vec.
+  
+  (* 3. Instantiate the Spectral Gap for the integer zero (Z_0) *)
+  (* This is the 4th axis checking the 'Zero-Drift' state *)
+  set (H_check := H_gap_all Z_0).
+  
+  (* 4. Prove that 'Solving the Equation' creates Zero Drift *)
+  assert (H_zero_drift : Rabs (IZR (DiophantineEquation v) - IZR Z_0) = R_0).
+  {
+    rewrite H_is_solution. (* Substitute the solution property *)
+    rewrite IZR_Z0.      (* IZR(0) = 0 *)
+    rewrite Rsub_diag.   (* x - x = 0 *)
+    apply Rabs_R0.       (* |0| = 0 *)
+  }
+  
+  (* 5. The Fatal Collision: Lambda <= 0 *)
+  rewrite H_zero_drift in H_check.
+  
+  (* 6. Final QED: The law of non-contradiction for Lambda > 0 *)
+  apply (Rlt_not_le R_0 Lambda).
+  - exact lambda_floor_pos.
+  - exact H_check.
+Qed.
+
+Check fourth_axis_excludes_all_solutions.

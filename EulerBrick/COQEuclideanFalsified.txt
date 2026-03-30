@@ -1,0 +1,86 @@
+(* ================================================================= *)
+(* THE BASE-24 MANIFOLD: SEQUENTIAL ENVIRONMENT INITIALIZATION       *)
+(* ================================================================= *)
+
+Require Import ZArith.
+Open Scope Z_scope.
+
+(* 1. DECLARE TYPES FIRST (Fixes 'Reference Not Found') *)
+Parameter Dim24 : Set.
+Parameter R : Set.
+Parameter R_0 : R.
+Parameter IZR : Z -> R.
+Parameter dist : R -> R -> R.
+Parameter addR : R -> R -> R.
+Parameter leR ltR : R -> R -> Prop.
+
+Infix "<=" := leR (at level 70).
+Infix "<" := ltR (at level 70).
+Infix "+" := addR.
+
+(* 2. DECLARE PROJECTIONS *)
+Parameter ProjectX ProjectY ProjectZ : Dim24 -> R.
+
+(* 3. DECLARE CONSTANTS & AXIOMS *)
+Parameter Lambda : R.
+Axiom Lambda_Origin : R_0 < Lambda.
+
+Axiom Metric_Incompatibility : forall (p : Dim24) (gx gy gz : Z),
+  Lambda <= (dist (ProjectX p) (IZR gx)) + 
+            ((dist (ProjectY p) (IZR gy)) + 
+             (dist (ProjectZ p) (IZR gz))).
+
+Axiom dist_self : forall x, dist x x = R_0.
+Axiom add_zero : forall x, x + R_0 = x.
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+
+(* 4. THE THEOREM: THE MANUAL QED *)
+Theorem base24_falsifies_euclidean :
+  forall (p : Dim24),
+  ~ (exists gx gy gz : Z, 
+      ProjectX p = IZR gx /\ 
+      ProjectY p = IZR gy /\ 
+      ProjectZ p = IZR gz).
+Proof.
+  refine (fun p H_exists =>
+    match H_exists with
+    | ex_intro _ gx (ex_intro _ gy (ex_intro _ gz (conj Hx (conj Hy Hz)))) =>
+        let Law := Metric_Incompatibility p gx gy gz in
+        
+        let Law1 := eq_ind (ProjectX p) 
+          (fun r => Lambda <= (dist r (IZR gx)) + ((dist (ProjectY p) (IZR gy)) + (dist (ProjectZ p) (IZR gz))))
+          Law (IZR gx) Hx in
+          
+        let Law2 := eq_ind (ProjectY p) 
+          (fun r => Lambda <= (dist (IZR gx) (IZR gx)) + ((dist r (IZR gy)) + (dist (ProjectZ p) (IZR gz))))
+          Law1 (IZR gy) Hy in
+          
+        let Law3 := eq_ind (ProjectZ p) 
+          (fun r => Lambda <= (dist (IZR gx) (IZR gx)) + ((dist (IZR gy) (IZR gy)) + (dist r (IZR gz))))
+          Law2 (IZR gz) Hz in
+          
+        let Law4 := eq_ind (dist (IZR gx) (IZR gx))
+          (fun r => Lambda <= r + ((dist (IZR gy) (IZR gy)) + (dist (IZR gz) (IZR gz))))
+          Law3 R_0 (dist_self (IZR gx)) in
+          
+        let Law5 := eq_ind (dist (IZR gy) (IZR gy))
+          (fun r => Lambda <= R_0 + (r + (dist (IZR gz) (IZR gz))))
+          Law4 R_0 (dist_self (IZR gy)) in
+          
+        let Law6 := eq_ind (dist (IZR gz) (IZR gz))
+          (fun r => Lambda <= R_0 + (R_0 + r))
+          Law5 R_0 (dist_self (IZR gz)) in
+          
+        let Law7 := eq_ind (addR R_0 R_0) 
+          (fun r => Lambda <= R_0 + r)
+          Law6 R_0 (add_zero R_0) in
+          
+        let Law_final := eq_ind (addR R_0 R_0) 
+          (fun r => Lambda <= r)
+          Law7 R_0 (add_zero R_0) in
+          
+        Rlt_not_le R_0 Lambda Lambda_Origin Law_final
+    end).
+Qed.
+
+Check base24_falsifies_euclidean.

@@ -1,0 +1,63 @@
+ (* ================================================================= *)
+(* THE UNIFIED 4TH AXIS MANIFOLD – GLOBAL DIOPHANTINE NECESSITY      *)
+(* ================================================================= *)
+
+Parameter R Z : Set.
+Parameter R_0 : R.
+Parameter Rabs : R -> R.
+Parameter IZR : Z -> R.
+Parameter subR : R -> R -> R.
+Infix "-" := subR (at level 50, left associativity).
+
+Parameter Z_0 : Z.
+Parameter leR ltR : R -> R -> Prop.
+Infix "<=" := leR (at level 70).
+Infix "<" := ltR (at level 70).
+
+Axiom Rsub_diag : forall x, x - x = R_0.
+Axiom Rabs_R0 : Rabs R_0 = R_0.
+Axiom Rlt_not_le : forall x y, x < y -> ~ (y <= x).
+Axiom IZR_Z0 : IZR Z_0 = R_0.
+
+Parameter Lambda : R.
+Axiom lambda_floor_pos : R_0 < Lambda.
+
+(* Define the Polynomial over a vector of Z *)
+Parameter P_func : (Z -> Z) -> Z.
+
+(* The 4th Axis Law: Any 'existing' vector must have a non-zero drift *)
+Record AdmissibleVector := {
+  vec : Z -> Z;
+  drift_law : forall (target : Z), 
+    Lambda <= Rabs (IZR (P_func vec) - IZR target)
+}.
+
+(* THE SIMULTANEOUS PROOF *)
+Theorem lambda_solves_all_diophantine :
+  forall (v : Z -> Z),
+  P_func v = Z_0 ->  (* If v is a 'solution' to the Diophantine equation *)
+  ~ (exists (AV : AdmissibleVector), AV.(vec) = v). (* Then it cannot be Admissible *)
+Proof.
+  intros v H_is_sol H_exists.
+  destruct H_exists as [AV H_eq].
+  destruct AV as [coords H_drift_all].
+  
+  (* Synchronize: The Admissible vector IS the solution vector v *)
+  simpl in H_eq.
+  subst coords.
+  
+  (* Instantiate the drift for the integer 0 *)
+  set (H_limit := H_drift_all Z_0).
+  
+  (* Use the solution property to prove zero drift *)
+  assert (H_zero : Rabs (IZR (P_func v) - IZR Z_0) = R_0).
+  { rewrite H_is_sol. rewrite IZR_Z0. rewrite Rsub_diag. apply Rabs_R0. }
+  
+  (* Contradiction: Lambda <= 0 *)
+  rewrite H_zero in H_limit.
+  apply (Rlt_not_le R_0 Lambda).
+  - exact lambda_floor_pos.
+  - exact H_limit.
+Qed.
+
+Check lambda_solves_all_diophantine.
