@@ -1,0 +1,84 @@
+(** FILENAME: UFT_F_Stiffness_Final_Check.v
+    PURPOSE: Formal Proof of the Positivity of C_well (Manifold Stiffness).
+    FIXED: Missing ln_gt_0 reference.
+**)
+
+Require Import Reals.
+Require Import Lra.
+Require Import Arith.
+Require Import Lia.
+
+(* Ensure the log functions are fully loaded *)
+Require Import Rfunctions. 
+
+Open Scope R_scope.
+
+Section Stiffness_Kernel.
+
+(* P is our sequence of Primes visible to the W=64 Tiling *)
+Variable P : nat -> R.
+Hypothesis P_gt_1 : forall n, P n > 1.
+
+(** HELPER: Prove Log-Positivity from First Principles **)
+Lemma ln_P_pos : forall n, ln (P n) > 0.
+Proof.
+  intros n.
+  rewrite <- ln_1. (* 0 is ln(1) *)
+  apply ln_increasing.
+  - lra. (* 1 > 0 *)
+  - apply P_gt_1.
+Qed.
+
+(* The individual 'Information Weight' of a prime power: (ln p)^3 / sqrt(p) *)
+Definition prime_weight (n : nat) : R :=
+  (ln (P n) ^ 3) / (sqrt (P n)).
+
+(* Lemma: Every individual prime weight is strictly positive *)
+Lemma weight_strictly_positive : forall n, prime_weight n > 0.
+Proof.
+  intros n. unfold prime_weight.
+  apply Rdiv_lt_0_compat.
+  - apply pow_lt. apply ln_P_pos.
+  - apply sqrt_lt_R0. 
+    specialize (P_gt_1 n). lra.
+Qed.
+
+(* C_well is the total stiffness across the N_max sampling gate *)
+Fixpoint C_well (N : nat) : R :=
+  match N with
+  | O => prime_weight O
+  | S n' => C_well n' + prime_weight (S n')
+  end.
+
+(** THEOREM: The Manifold Stiffness is strictly positive.
+    This anchors the 'Moat' to the ground-truth of the primes. **)
+Theorem C_well_is_positive : forall N, C_well N > 0.
+Proof.
+  induction N.
+  - simpl. apply weight_strictly_positive.
+  - simpl.
+    assert (Hw : prime_weight (S N) > 0) by apply weight_strictly_positive.
+    lra. 
+Qed.
+
+End Stiffness_Kernel.
+
+(** FINAL AUDIT: Proof of No-Holes **)
+Print Assumptions C_well_is_positive.
+
+
+
+
+
+
+Axioms:
+ClassicalDedekindReals.sig_not_dec
+  : forall P : Prop, {~ ~ P} + {~ P}
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+Classical_Prop.classic : forall P : Prop, P \/ ~ P

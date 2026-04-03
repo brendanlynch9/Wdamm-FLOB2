@@ -1,0 +1,70 @@
+(** FILENAME: UFT_F_Log_Positivity_Final_V2.v
+    PURPOSE: Establishing the non-negativity of the stiffness components.
+    FIXED: Replaced missing ln_increasing_le with ln_increasing and lra.
+**)
+
+Require Import Reals.
+Require Import Lra.
+Require Import Rfunctions.
+
+Open Scope R_scope.
+
+Section Log_Positivity.
+
+Variable P : nat -> R.
+Hypothesis P_growth : forall n, P n >= INR n + 2.
+
+Lemma ln_Pn_ge_0 : forall n, ln (P n) >= 0.
+Proof.
+  intros n.
+  (* 1. Establish that P(n) is strictly greater than 1 *)
+  assert (H_p1 : P n > 1).
+  { specialize (P_growth n).
+    pose proof (pos_INR n). 
+    lra. (* Since P n >= n + 2 and n >= 0, P n >= 2, so P n > 1 *) }
+  
+  (* 2. Map the inequality through the monotonic ln function *)
+  rewrite <- ln_1.
+  apply Rle_ge.
+  (* We use 'left' to turn the goal into a strict inequality 
+     to match ln_increasing *)
+  left. 
+  apply ln_increasing.
+  - lra. (* 1 > 0 *)
+  - lra. (* 1 < P n *)
+Qed.
+
+End Log_Positivity.
+
+(** --- QED --- **)
+Check ln_Pn_ge_0.
+
+Print Assumptions ln_Pn_ge_0.
+
+
+
+
+
+
+ln_Pn_ge_0
+     : forall P : nat -> R,
+       (forall n : nat, P n >= INR n + 2) ->
+       forall n : nat, ln (P n) >= 0
+
+
+
+
+
+
+
+       Axioms:
+ClassicalDedekindReals.sig_not_dec
+  : forall P : Prop, {~ ~ P} + {~ P}
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+Classical_Prop.classic : forall P : Prop, P \/ ~ P

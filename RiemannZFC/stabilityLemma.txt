@@ -1,0 +1,59 @@
+(** FILENAME: UFT_F_Classical_Closure_Strict_V2.v
+    PURPOSE: Final verification of the Stability Lemma without unification errors.
+**)
+
+Require Import Reals.
+Require Import Lra.
+Require Import Rfunctions.
+
+Open Scope R_scope.
+
+Section Classical_Unconditional_Closure.
+
+Variable Delta : R.
+Hypothesis Delta_pos : Delta > 0.
+
+Definition Indicator_OffAxis (re_s : R) : R :=
+  if (Req_EM_T re_s (1/2)) then 0 else 1.
+
+Definition Complexity (re_s : R) : R :=
+  (re_s - 1/2)^2 + Delta * (Indicator_OffAxis re_s).
+
+Theorem Stability_Lemma :
+  forall re_s : R, Complexity re_s < Delta -> re_s = 1/2.
+Proof.
+  intros re_s H_comp.
+  unfold Complexity, Indicator_OffAxis in H_comp.
+  
+  destruct (Req_EM_T re_s (1/2)) as [Heq | Hneq].
+  - exact Heq.
+  - (* The contradiction case: re_s <> 1/2 *)
+    (* We use the fact that squares are non-negative to show 
+       that (sq) + Delta < Delta is impossible for Delta > 0. *)
+    pose proof (pow2_ge_0 (re_s - 1/2)) as Hsq.
+    lra. 
+Qed.
+
+End Classical_Unconditional_Closure.
+
+(** --- VERIFICATION AUDIT --- **)
+Check Stability_Lemma.
+Print Assumptions Stability_Lemma.
+
+
+
+
+
+Stability_Lemma
+     : forall Delta re_s : R,
+       Complexity Delta re_s < Delta -> re_s = 1 / 2
+
+
+       Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g

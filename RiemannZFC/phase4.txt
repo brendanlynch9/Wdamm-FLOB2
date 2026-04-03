@@ -1,0 +1,177 @@
+(* ================================================================= *)
+(* PHASE 4: SPECTRAL-LOGIC SYNTHESIS — Conditional Closure of RH     *)
+(* ================================================================= *)
+
+Require Import Reals.
+Require Import Coquelicot.Coquelicot.
+Require Import Coquelicot.Rbar.
+Require Import Classical.
+Require Import Lra.
+Open Scope R_scope.
+
+(* ----------------------------------------------------------------- *)
+(* 1. Core Definitions                                               *)
+(* ----------------------------------------------------------------- *)
+Record C : Set := mkC { ReZ : R; ImZ : R }.
+
+Definition Cnorm (z : C) : R :=
+  sqrt (ReZ z * ReZ z + ImZ z * ImZ z).
+
+Definition Integrable (f : R -> R) (a b : R) := ex_RInt f a b.
+
+Parameter Zeros : C -> Prop.
+Parameter prime_signal_F : R -> C.
+Parameter mode_contrib : C -> R -> C.
+
+Axiom mode_contrib_def : forall rho u,
+  mode_contrib rho u = mkC (exp ((ReZ rho - 1/2) * u) * cos (ImZ rho * u))
+                           (exp ((ReZ rho - 1/2) * u) * sin (ImZ rho * u)).
+
+Axiom functional_symmetry :
+  forall rho, Zeros rho -> Zeros (mkC (1 - ReZ rho) (ImZ rho)).
+
+Parameter K_L2 : R.
+Parameter Rmax_val : R.
+
+Axiom finite_L2_energy :
+  Integrable (fun u => Cnorm (prime_signal_F u) * Cnorm (prime_signal_F u)) (-Rmax_val) Rmax_val /\
+  RInt (fun u => Cnorm (prime_signal_F u) * Cnorm (prime_signal_F u)) (-Rmax_val) Rmax_val <= K_L2.
+
+Axiom off_critical_mode_diverges :
+  forall rho, Zeros rho -> ReZ rho > 1/2 ->
+    ~ Integrable (fun u => Cnorm (mode_contrib rho u) * Cnorm (mode_contrib rho u)) (-Rmax_val) Rmax_val.
+
+Axiom explicit_formula_L2_bridge :
+  (exists rho, Zeros rho /\
+               ~ Integrable (fun u => Cnorm (mode_contrib rho u) * Cnorm (mode_contrib rho u)) (-Rmax_val) Rmax_val) ->
+  ~ Integrable (fun u => Cnorm (prime_signal_F u) * Cnorm (prime_signal_F u)) (-Rmax_val) Rmax_val.
+
+(* ----------------------------------------------------------------- *)
+(* 2. CIC Encoding: ρ ↦ ModalTerm                                    *)
+(* ----------------------------------------------------------------- *)
+Inductive ModalTerm (rho : C) : Type :=
+| Oscillator : ModalTerm rho
+| DebtStep : ModalTerm rho -> ModalTerm rho.
+
+Parameter reduction_length : forall {rho : C}, ModalTerm rho -> Rbar.
+
+Conjecture normalization_energy_correspondence :
+  forall rho : C, Zeros rho ->
+    (ReZ rho = 1/2 <-> exists t : ModalTerm rho, is_finite (reduction_length t)) /\
+    (ReZ rho > 1/2 -> forall t : ModalTerm rho, reduction_length t = p_infty).
+
+Axiom modal_energy_link :
+  forall rho : C, Zeros rho ->
+    (forall t : ModalTerm rho, reduction_length t = p_infty) ->
+    ~ Integrable (fun u => Cnorm (mode_contrib rho u) * Cnorm (mode_contrib rho u)) (-Rmax_val) Rmax_val.
+
+(* ----------------------------------------------------------------- *)
+(* 3. Main Theorem: Conditional Closure                              *)
+(* ----------------------------------------------------------------- *)
+Theorem RH_Main_Result_Synthesis :
+  (* Premise from Phase 1: finite energy of the prime signal *)
+  Integrable (fun u => Cnorm (prime_signal_F u) * Cnorm (prime_signal_F u)) (-Rmax_val) Rmax_val ->
+  (* Conclusion: RH holds *)
+  forall rho : C, Zeros rho -> ReZ rho = 1/2.
+Proof.
+  intros H_finite_energy rho H_zero.
+  apply NNPP; intro H_neq.
+  destruct (total_order_T (ReZ rho) (1/2)) as [[H_lt | H_eq] | H_gt].
+  - (* Re(ρ) < 1/2 → mirror *)
+    assert (H_mirror : Zeros (mkC (1 - ReZ rho) (ImZ rho)))
+      by (apply functional_symmetry; exact H_zero).
+    assert (H_mirror_gt : ReZ (mkC (1 - ReZ rho) (ImZ rho)) > 1/2)
+      by (simpl; lra).
+
+    assert (H_inf_red : forall t : ModalTerm (mkC (1 - ReZ rho) (ImZ rho)),
+              reduction_length t = p_infty)
+      by (apply normalization_energy_correspondence; auto).
+
+    assert (H_div : ~ Integrable (fun u => Cnorm (mode_contrib (mkC (1 - ReZ rho) (ImZ rho)) u) *
+                                           Cnorm (mode_contrib (mkC (1 - ReZ rho) (ImZ rho)) u))
+                                 (-Rmax_val) Rmax_val)
+      by (apply modal_energy_link; auto).
+
+    assert (H_total_div : ~ Integrable (fun u => Cnorm (prime_signal_F u) * Cnorm (prime_signal_F u))
+                                       (-Rmax_val) Rmax_val)
+      by (apply explicit_formula_L2_bridge;
+          exists (mkC (1 - ReZ rho) (ImZ rho)); split; auto).
+
+    contradiction.
+
+  - congruence.
+
+  - (* Re(ρ) > 1/2 *)
+    assert (H_inf_red : forall t : ModalTerm rho, reduction_length t = p_infty)
+      by (apply normalization_energy_correspondence; auto).
+
+    assert (H_div : ~ Integrable (fun u => Cnorm (mode_contrib rho u) * Cnorm (mode_contrib rho u))
+                                 (-Rmax_val) Rmax_val)
+      by (apply modal_energy_link; auto).
+
+    assert (H_total_div : ~ Integrable (fun u => Cnorm (prime_signal_F u) * Cnorm (prime_signal_F u))
+                                       (-Rmax_val) Rmax_val)
+      by (apply explicit_formula_L2_bridge;
+          exists rho; split; auto).
+
+    contradiction.
+Qed.
+
+Check RH_Main_Result_Synthesis.
+Print Assumptions RH_Main_Result_Synthesis.
+
+
+
+
+
+
+
+
+Axioms:
+ClassicalDedekindReals.sig_not_dec
+  : forall P : Prop, {~ ~ P} + {~ P}
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+reduction_length : forall rho : C, ModalTerm rho -> Rbar
+prime_signal_F : R -> C
+normalization_energy_correspondence
+  : forall rho : C,
+    Zeros rho ->
+    (ReZ rho = 1 / 2 <->
+     (exists t : ModalTerm rho, is_finite (reduction_length t))) /\
+    (ReZ rho > 1 / 2 ->
+     forall t : ModalTerm rho, reduction_length t = p_infty)
+mode_contrib : C -> R -> C
+modal_energy_link
+  : forall rho : C,
+    Zeros rho ->
+    (forall t : ModalTerm rho, reduction_length t = p_infty) ->
+    ~
+    Integrable
+      (fun u : R =>
+       Cnorm (mode_contrib rho u) * Cnorm (mode_contrib rho u))
+      (- Rmax_val) Rmax_val
+functional_symmetry
+  : forall rho : C,
+    Zeros rho -> Zeros {| ReZ := 1 - ReZ rho; ImZ := ImZ rho |}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+explicit_formula_L2_bridge
+  : (exists rho : C,
+       Zeros rho /\
+       ~
+       Integrable
+         (fun u : R =>
+          Cnorm (mode_contrib rho u) * Cnorm (mode_contrib rho u))
+         (- Rmax_val) Rmax_val) ->
+    ~
+    Integrable
+      (fun u : R =>
+       Cnorm (prime_signal_F u) * Cnorm (prime_signal_F u))
+      (- Rmax_val) Rmax_val
+classic : forall P : Prop, P \/ ~ P
+Zeros : C -> Prop
+Rmax_val : R
