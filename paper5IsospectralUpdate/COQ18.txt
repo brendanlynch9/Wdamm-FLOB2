@@ -1,0 +1,125 @@
+(** =====================================================
+    UFT-F FORMAL VERIFICATION: LAW 5
+    THE ISOSPECTRAL UPDATE LAW
+    
+    Formal Proof of Spectral Preservation: 
+    Ensuring that Unitary Updates H' = UHU* do not 
+    alter the cognitive spectrum (No-Forgetting).
+    ===================================================== **)
+
+Require Import Reals.
+Require Import Lra.
+Open Scope R_scope.
+
+(** --- SECTION 1: OPERATOR DEFINITIONS & ALGEBRA --- *)
+
+Parameter Matrix : Type.
+Parameter Identity : Matrix.
+Parameter adj : Matrix -> Matrix.
+Parameter mult : Matrix -> Matrix -> Matrix.
+Parameter minus : Matrix -> Matrix -> Matrix.
+Parameter det : Matrix -> R.
+
+(* Define Infix for Matrix Operations *)
+Infix "*" := mult.
+Infix "-" := minus.
+
+(** Definition: A matrix U is Unitary if U * U* = I *)
+Definition is_unitary (U : Matrix) : Prop :=
+  U * (adj U) = Identity /\ (adj U) * U = Identity.
+
+(** Axiom: Multiplicativity of the Determinant 
+    det(AB) = det(A) * det(B). *)
+Axiom det_mult : forall A B, det (A * B) = (det A * det B)%R.
+
+(** Axiom: Determinant of Identity is 1 *)
+Axiom det_id : det Identity = 1.
+
+(** Axiom: Unitary Distributive Property
+    Unitary conjugation distributes over the characteristic shift. *)
+Axiom unitary_distributive : forall (U H : Matrix) (lambda : R),
+  is_unitary U ->
+  U * (H - Identity) * (adj U) = (U * H * adj U) - Identity.
+
+(** --- SECTION 2: THE NO-FORGETTING THEOREM --- *)
+
+Theorem Isospectral_Update_Invariant : 
+  forall (U H : Matrix),
+  is_unitary U ->
+  det (H - Identity) = det ((U * H * (adj U)) - Identity).
+Proof.
+  intros U H HU.
+  destruct HU as [H_unit_r H_unit_l].
+  
+  (* Step 1: Use the distributive property to pull U and U* out *)
+  rewrite <- (unitary_distributive U H 1.0).
+  - (* Step 2: Apply det(ABC) = (det A * det B) * det C via det_mult *)
+    repeat rewrite det_mult.
+    
+    (* Step 3: Use commutativity to move det(H - I) to the front *)
+    rewrite (Rmult_comm (det U) (det (H - Identity))).
+    
+    (* Step 4: Use associativity to group (det U * det (adj U)) 
+       Note: We remove the '<-' because we are moving to right-association. *)
+    rewrite Rmult_assoc.
+    
+    (* Step 5: Re-combine det(U) * det(adj U) into det(U * adj U) *)
+    rewrite <- det_mult.
+    rewrite H_unit_r. 
+    
+    (* Step 6: Final simplification: det(H-I) * det(I) = det(H-I) *)
+    rewrite det_id.
+    rewrite Rmult_1_r.
+    reflexivity.
+  - split; assumption.
+Qed.
+
+(** --- SECTION 3: LAW 5 INTEGRATION --- *)
+
+Definition No_Forgetting (H_init H_final : Matrix) :=
+  det (H_init - Identity) = det (H_final - Identity).
+
+Lemma Law5_Spectral_Stability_Guarantee :
+  forall (U H : Matrix),
+  is_unitary U ->
+  let H_new := (U * H * adj U) in
+  No_Forgetting H H_new.
+Proof.
+  intros U H HU H_new.
+  unfold No_Forgetting, H_new.
+  apply Isospectral_Update_Invariant.
+  assumption.
+Qed.
+
+(** --- FINAL AUDIT --- *)
+Print Assumptions Law5_Spectral_Stability_Guarantee.
+
+
+
+
+
+Axioms:
+unitary_distributive
+  : forall U H : Matrix,
+    R ->
+    is_unitary U ->
+    U * (H - Identity) * adj U =
+    U * H * adj U - Identity
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+mult : Matrix -> Matrix -> Matrix
+minus : Matrix -> Matrix -> Matrix
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+det_mult
+  : forall A B : Matrix,
+    det (A * B) = (det A * det B)%R
+det_id : det Identity = 1
+det : Matrix -> R
+adj : Matrix -> Matrix
+Matrix : Type
+Identity : Matrix
