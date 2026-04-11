@@ -82,7 +82,6 @@ The filtering is complete.
 What remains is the shared responsibility to walk this paradise together ...with care, coherence, and love.
 Thank you for exploring it.
 — Brendan Lynch, MLIS
-
 10.5281/zenodo.17566371
 10.5281/zenodo.17583962
 10.5281/zenodo.17592910
@@ -141,9 +140,11 @@ Thank you for exploring it.
 10.5281/zenodo.19192838
 10.5281/zenodo.19226165
 10.5281/zenodo.19228562
-10.5281/zenodo.19335220 
-10.5281/zenodo.19356920 
-10.5281/zenodo.19410870 
+10.5281/zenodo.19335220
+10.5281/zenodo.19356920
+10.5281/zenodo.19370625
+10.5281/zenodo.19410870
+10.5281/zenodo.19515634
 10.5281/zenodo.19410870
 10.5281/zenodo.19440860
 10.5281/zenodo.19441132
@@ -152,6 +153,9 @@ Thank you for exploring it.
 10.5281/zenodo.19443024
 10.5281/zenodo.19443190
 10.5281/zenodo.19443437
+
+
+
 
 https://doi.org/10.5281/zenodo.17993167
 https://doi.org/10.5281/zenodo.17566371
@@ -213,9 +217,9 @@ https://doi.org/10.5281/zenodo.19152053
 https://doi.org/10.5281/zenodo.19192838
 https://doi.org/10.5281/zenodo.19226165
 https://doi.org/10.5281/zenodo.19228562
-https://doi.org/10.5281/zenodo.19335220 
-https://doi.org/10.5281/zenodo.19356920 
-https://doi.org/10.5281/zenodo.19410870
+https://doi.org/10.5281/zenodo.19335220
+https://doi.org/10.5281/zenodo.19356920
+https://doi.org/10.5281/zenodo.19370625
 https://doi.org/10.5281/zenodo.19410870
 https://doi.org/10.5281/zenodo.19440860
 https://doi.org/10.5281/zenodo.19441132
@@ -224,6 +228,12 @@ https://doi.org/10.5281/zenodo.19441728
 https://doi.org/10.5281/zenodo.19443024
 https://doi.org/10.5281/zenodo.19443190
 https://doi.org/10.5281/zenodo.19443437
+https://doi.org/10.5281/zenodo.19515634
+
+
+
+
+
 
 
 
@@ -287,9 +297,10 @@ https://zenodo.org/records/19152053
 https://zenodo.org/records/19192838
 https://zenodo.org/records/19226165
 https://zenodo.org/records/19228562
-https://zenodo.org/records/19335220 
-https://zenodo.org/records/19356920 
-https://zenodo.org/records/19410870 
+https://zenodo.org/records/19335220
+https://zenodo.org/records/19356920
+https://zenodo.org/records/19370625	
+https://zenodo.org/records/19410870
 https://zenodo.org/records/19440860
 https://zenodo.org/records/19441132
 https://zenodo.org/records/19441471
@@ -297,7 +308,7 @@ https://zenodo.org/records/19441728
 https://zenodo.org/records/19443024
 https://zenodo.org/records/19443190
 https://zenodo.org/records/19443437
-
+https://zenodo.org/records/19515634
 
 
 
