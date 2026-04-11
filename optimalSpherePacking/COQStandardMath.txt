@@ -1,0 +1,341 @@
+(* ==========================================================================
+   UFT-F Standard Math Formalization
+   Verification of Section 9: Parameter Regime and Numerical Closure
+   ========================================================================== *)
+
+Require Import Reals Psatz.
+Open Scope R_scope.
+
+Module StandardMathVerification.
+Section NumericalClosure.
+
+(* ==========================================================================
+   HELPER LEMMA: Bypassing variable denominators for NRA
+   ========================================================================== *)
+Lemma clear_denom : forall a b c, b > 0 -> a < c * b -> a / b < c.
+Proof.
+  intros a b c Hb H.
+  assert (Hneq : b <> 0) by lra.
+  apply Rmult_lt_reg_r with (r := b); auto.
+  unfold Rdiv. 
+  rewrite Rmult_assoc. 
+  rewrite Rinv_l; auto.
+  lra.
+Qed.
+
+(* ==========================================================================
+   1. FRAMEWORK PARAMETERS & CONSTANTS
+   ========================================================================== *)
+Parameter d : R.
+Parameter K : R.
+Parameter gamma Gamma : R.
+Parameter h epsilon rho_max : R.
+Parameter mu_B : R.
+
+(* Computed parameters from Section 9 (using * instead of ^2 for nra stability) *)
+Definition L_g : R := (3 * h) / epsilon.
+Definition L_V : R := L_g * Gamma.
+Definition Delta : R := (2 * h) - (Gamma / gamma) * rho_max.
+Definition c0 : R := gamma * Delta * mu_B.
+
+(* The critical threshold ratio R *)
+Definition R_ratio : R := (4 * (L_V * L_V)) / (K * (c0 * c0)).
+Definition d_crit : R := 1 + R_ratio.
+
+(* ==========================================================================
+   2. NUMERICAL INSTANTIATION (As defined in the paper)
+   ========================================================================== *)
+Hypothesis K_val : K = 1.
+Hypothesis h_val : h = 10.
+Hypothesis eps_val : epsilon = 1.
+Hypothesis gamma_val : gamma = 1.
+Hypothesis Gamma_val : Gamma = 11/10. (* 1.1 exact rational representation *)
+Hypothesis rho_max_val : rho_max = 1.
+Hypothesis mu_B_bound : mu_B >= 11/10. (* 1.1 lower bound on ball measure *)
+
+(* ==========================================================================
+   3. INTERMEDIATE VALUE VERIFICATION
+   ========================================================================== *)
+Theorem Calc_L_g : L_g = 30.
+Proof.
+  unfold L_g. rewrite h_val, eps_val. lra.
+Qed.
+
+Theorem Calc_Delta : Delta = 189/10. (* 18.9 *)
+Proof.
+  unfold Delta. rewrite h_val, Gamma_val, gamma_val, rho_max_val. lra.
+Qed.
+
+Theorem Calc_L_V : L_V = 33.
+Proof.
+  unfold L_V. rewrite Calc_L_g, Gamma_val. lra.
+Qed.
+
+(* ==========================================================================
+   4. CRITICAL THRESHOLD VERIFICATION
+   ========================================================================== *)
+Theorem Calc_R_ratio_Bound : R_ratio < 101/10. (* 10.1 *)
+Proof.
+  unfold R_ratio, c0.
+  rewrite K_val, Calc_L_V, Calc_Delta, gamma_val.
+  assert (Hmu : mu_B >= 11/10) by exact mu_B_bound.
+  
+  (* We use the helper lemma to clear the variable denominator *)
+  apply clear_denom.
+  - (* Prove denominator is strictly positive *)
+    nra.
+  - (* Prove the polynomial inequality: Num < 10.1 * Denom *)
+    nra.
+Qed.
+
+Theorem Calc_d_crit : d_crit < 111/10. (* 11.1 *)
+Proof.
+  unfold d_crit.
+  generalize Calc_R_ratio_Bound; intro.
+  lra.
+Qed.
+
+(* ==========================================================================
+   5. GEOMETRIC IMPOSSIBILITY (COLLISION EXCLUSION)
+   ========================================================================== *)
+Parameter L1_V : R.
+Parameter collision : Prop.
+
+(* Theorem 7: Geometric Lower Bound under Collision *)
+Hypothesis Geometric_Lower_Bound : collision -> L1_V >= c0.
+
+(* Theorem 1: Spectral Normalization (Squared form to bypass sqrt) *)
+Hypothesis Spectral_Upper_Bound_Sq : L1_V * L1_V <= (4 * (L_V * L_V)) / (K * (d - 1)).
+
+Theorem Collision_Impossibility :
+  d = 137 -> ~collision.
+Proof.
+  intros Hd Hcoll.
+  
+  (* Apply the lower bound derived from collision *)
+  apply Geometric_Lower_Bound in Hcoll.
+  
+  (* Establish strictly positive constants *)
+  assert (H_c0_pos : c0 > 0).
+  { unfold c0. rewrite gamma_val, Calc_Delta.
+    assert (H_mu_bound : mu_B >= 11/10) by exact mu_B_bound.
+    nra. }
+  assert (H_K_pos : K > 0) by (rewrite K_val; lra).
+  assert (H_d_minus_1 : d - 1 = 136) by (rewrite Hd; lra).
+
+  (* Square the geometric lower bound *)
+  assert (H_L1_sq : L1_V * L1_V >= c0 * c0) by nra.
+
+  (* Pull and evaluate the spectral upper bound *)
+  generalize Spectral_Upper_Bound_Sq; intro H_upper.
+  rewrite H_d_minus_1, K_val, Calc_L_V in H_upper.
+  
+  (* Unfold the geometric lower bound explicitly *)
+  unfold c0 in H_L1_sq.
+  rewrite gamma_val, Calc_Delta in H_L1_sq.
+  assert (H_mu_bound : mu_B >= 11/10) by exact mu_B_bound.
+
+  (* Non-Linear Real Arithmetic resolves the contradiction between the bounds 
+     since division by a constant (136) is natively handled. *)
+  nra.
+Qed.
+
+End NumericalClosure.
+End StandardMathVerification.
+
+(* ==========================================================================
+   FINAL AUDIT AND ASSUMPTION LOG
+   ========================================================================== *)
+Import StandardMathVerification.
+
+Check Calc_L_g.
+Print Assumptions Calc_L_g.
+
+Check Calc_Delta.
+Print Assumptions Calc_Delta.
+
+Check Calc_L_V.
+Print Assumptions Calc_L_V.
+
+Check Calc_R_ratio_Bound.
+Print Assumptions Calc_R_ratio_Bound.
+
+Check Calc_d_crit.
+Print Assumptions Calc_d_crit.
+
+Check Collision_Impossibility.
+Print Assumptions Collision_Impossibility.
+
+
+
+
+
+
+
+
+
+Calc_L_g
+     : h = 10 -> epsilon = 1 -> L_g = 30
+
+
+     Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+h : R
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+epsilon : R
+
+
+
+Calc_Delta
+     : h = 10 ->
+       gamma = 1 ->
+       Gamma = 11 / 10 ->
+       rho_max = 1 -> Delta = 189 / 10
+
+
+Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+rho_max : R
+h : R
+gamma : R
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+Gamma : R
+
+
+
+Calc_L_V
+     : h = 10 ->
+       epsilon = 1 -> Gamma = 11 / 10 -> L_V = 33
+
+
+
+
+       Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+h : R
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+epsilon : R
+Gamma : R
+
+
+
+
+Calc_R_ratio_Bound
+     : K = 1 ->
+       h = 10 ->
+       epsilon = 1 ->
+       gamma = 1 ->
+       Gamma = 11 / 10 ->
+       rho_max = 1 ->
+       mu_B >= 11 / 10 -> R_ratio < 101 / 10
+
+
+
+       Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+rho_max : R
+mu_B : R
+h : R
+gamma : R
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+epsilon : R
+K : R
+Gamma : R
+
+
+
+
+Calc_d_crit
+     : K = 1 ->
+       h = 10 ->
+       epsilon = 1 ->
+       gamma = 1 ->
+       Gamma = 11 / 10 ->
+       rho_max = 1 ->
+       mu_B >= 11 / 10 -> d_crit < 111 / 10
+
+
+
+
+       Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+rho_max : R
+mu_B : R
+h : R
+gamma : R
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+epsilon : R
+K : R
+Gamma : R
+
+
+
+
+Collision_Impossibility
+     : K = 1 ->
+       h = 10 ->
+       epsilon = 1 ->
+       gamma = 1 ->
+       Gamma = 11 / 10 ->
+       rho_max = 1 ->
+       mu_B >= 11 / 10 ->
+       (collision -> L1_V >= c0) ->
+       L1_V * L1_V <= 4 * (L_V * L_V) / (K * (d - 1)) ->
+       d = 137 -> ~ collision
+
+
+
+
+Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+rho_max : R
+mu_B : R
+h : R
+gamma : R
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+epsilon : R
+d : R
+collision : Prop
+L1_V : R
+K : R
+Gamma : R
+
+
+
+
