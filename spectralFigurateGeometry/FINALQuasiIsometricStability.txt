@@ -1,0 +1,56 @@
+(** ========================================================
+    THEOREM 3: QUASI-ISOMETRIC STABILITY (FINAL)
+    Proving that the spectral projection preserves the 
+    metric structure within a 2-delta boundary.
+    ======================================================== *)
+
+Require Import Reals.
+Require Import Lra.
+
+Open Scope R_scope.
+
+Theorem quasi_isometric_stability :
+  forall (M : Type) (dist : M -> M -> R) (delta : R) (Net1 Net2 : M -> Prop) (pi2 : M -> M),
+  (forall x y z, dist x z <= dist x y + dist y z) -> 
+  (forall x y, dist x y = dist y x) ->
+  delta > 0 ->
+  (forall x, Net2 (pi2 x) /\ dist x (pi2 x) < delta) -> 
+  forall (x y : M),
+  dist x y <= dist (pi2 x) (pi2 y) + 2 * delta.
+Proof.
+  intros M' d' delta Net1 Net2 pi2 Htri Hsym Hdel Hpi2 x y.
+  
+  (* Grounded Triangle Inequality Path: x -> pi2 x -> y *)
+  apply Rle_trans with (d' x (pi2 x) + d' (pi2 x) y).
+  { apply Htri. }
+  
+  (* Extract the individual error bounds for x and y *)
+  destruct (Hpi2 x) as [_ Dx].
+  destruct (Hpi2 y) as [_ Dy].
+  
+  (* Bridge the second segment: pi2 x -> pi2 y -> y *)
+  assert (H_inner: d' (pi2 x) y <= d' (pi2 x) (pi2 y) + d' (pi2 y) y) by apply Htri.
+  
+  (* Use symmetry to ensure d'(pi2 y, y) matches our bound for d'(y, pi2 y) *)
+  rewrite Hsym in Dy.
+  
+  (* All terms are now grounded; lra completes the linear summation *)
+  lra.
+Qed.
+
+Print Assumptions quasi_isometric_stability.
+
+
+
+
+
+
+Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g

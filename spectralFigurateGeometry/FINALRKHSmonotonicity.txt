@@ -1,0 +1,105 @@
+(** ========================================================
+    LEMMA 1: RKHS METRIC MONOTONICITY
+    Formalizing d_H(r) = sqrt(2(1 - exp(-r^2 / 2sigma^2)))
+    Verification of non-negativity and strict growth.
+    ======================================================== *)
+
+Require Import Reals.
+Require Import Lra.
+
+Open Scope R_scope.
+
+Parameter sigma : R.
+Axiom sigma_pos : sigma > 0.
+
+Definition d_H_sq (r : R) : R := 2 * (1 - exp (- (r * r) / (2 * (sigma * sigma)))).
+
+Theorem RKHS_distance_strictly_increasing :
+  forall r1 r2 : R,
+  0 <= r1 -> r1 < r2 ->
+  sqrt (d_H_sq r1) < sqrt (d_H_sq r2).
+Proof.
+  intros r1 r2 H0 H12.
+  
+  pose proof sigma_pos as Hsp.
+    
+  assert (Hden_pos: 0 < 2 * (sigma * sigma)).
+  { apply Rmult_lt_0_compat; [lra | apply Rmult_lt_0_compat; exact Hsp; exact Hsp]. }
+  
+  assert (Hden_nz: 2 * (sigma * sigma) <> 0) by lra.
+
+  apply sqrt_lt_1_alt.
+  split.
+  - (* Step 1: Prove 0 <= d_H_sq r1 *)
+    unfold d_H_sq.
+    apply Rmult_le_pos; [lra | ].
+    apply Rplus_le_reg_l with (exp (-(r1 * r1)/(2 * (sigma * sigma)))).
+    replace (exp (- (r1 * r1) / (2 * (sigma * sigma))) + 0) 
+       with (exp (- (r1 * r1) / (2 * (sigma * sigma)))) by lra.
+    replace (exp (- (r1 * r1) / (2 * (sigma * sigma))) + (1 - exp (- (r1 * r1) / (2 * (sigma * sigma))))) 
+       with 1 by lra.
+    rewrite <- exp_0.
+    
+    destruct (Req_dec r1 0) as [Hz | Hnz].
+    + rewrite Hz. 
+      replace (- (0 * 0) / (2 * (sigma * sigma))) with 0 by lra.
+      apply Rle_refl.
+    + apply Rlt_le. apply exp_increasing.
+      assert (Hr1_sq: 0 < r1 * r1).
+      { destruct H0 as [H1p | H1z]; [apply Rmult_lt_0_compat; assumption | lra]. }
+      
+      unfold Rdiv. 
+      assert (H_pos: 0 < (r1 * r1) * / (2 * (sigma * sigma))).
+      { apply Rmult_lt_0_compat; [exact Hr1_sq | apply Rinv_0_lt_compat; exact Hden_pos]. }
+      lra.
+
+  - (* Step 2: Prove d_H_sq r1 < d_H_sq r2 *)
+    unfold d_H_sq.
+    apply Rmult_lt_compat_l; [lra | ].
+    apply Rplus_lt_compat_l.
+    
+    assert (H_neg_flip: forall a b, a < b -> -b < -a) by (intros; lra).
+    
+    apply H_neg_flip.
+    apply exp_increasing.
+    
+    unfold Rdiv.
+    replace (- (r2 * r2) * / (2 * (sigma * sigma))) with (- (r2 * r2 * / (2 * (sigma * sigma)))) by lra.
+    replace (- (r1 * r1) * / (2 * (sigma * sigma))) with (- (r1 * r1 * / (2 * (sigma * sigma)))) by lra.
+    apply H_neg_flip.
+    
+    apply Rmult_lt_compat_r.
+    + apply Rinv_0_lt_compat. exact Hden_pos.
+    + (* Manual proof of r1^2 < r2^2 using monotonicity of multiplication *)
+      destruct H0 as [H1p | H1z].
+      * (* Case r1 > 0 *)
+        apply Rlt_trans with (r1 * r2).
+        -- apply Rmult_lt_compat_l; assumption.
+        -- apply Rmult_lt_compat_r; lra.
+      * (* Case r1 = 0 *)
+        rewrite <- H1z. rewrite Rmult_0_l.
+        apply Rmult_lt_0_compat; lra.
+Qed.
+
+Close Scope R_scope.
+Print Assumptions RKHS_distance_strictly_increasing.
+
+
+
+
+
+
+Axioms:
+sigma_pos : (sigma > 0)%R
+sigma : R
+ClassicalDedekindReals.sig_not_dec
+  : forall P : Prop, {~ ~ P} + {~ P}
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+Classical_Prop.classic : forall P : Prop, P \/ ~ P

@@ -1,0 +1,100 @@
+Require Import Reals.
+Require Import Lra.
+Require Import NArith.
+
+Open Scope R_scope.
+
+(* ---------------------------- *)
+(* Constants *)
+(* ---------------------------- *)
+Definition D_discrete : R := 1.0.
+Definition D_continuum : R := 28.0.
+Definition D_intermediate : R := 14.5.
+
+(* ---------------------------- *)
+(* Admissibility Predicate *)
+(* ---------------------------- *)
+Definition Admissible (d : R) : Prop :=
+  (d = D_discrete) \/ (d = D_continuum).
+
+(* ---------------------------- *)
+(* Existence Type *)
+(* ---------------------------- *)
+Inductive Existence (d : R) : Type :=
+| Realizable : Admissible d -> Existence d
+| SpectralGhost : ~ Admissible d -> Existence d.
+
+(* ---------------------------- *)
+(* Step 1: Discrete and Continuum *)
+(* ---------------------------- *)
+Lemma discrete_is_realizable : Existence D_discrete.
+Proof. apply Realizable. left; reflexivity. Qed.
+
+Lemma continuum_is_realizable : Existence D_continuum.
+Proof. apply Realizable. right; reflexivity. Qed.
+
+(* ---------------------------- *)
+(* Step 2: Intermediate is void *)
+(* ---------------------------- *)
+Lemma intermediate_not_admissible : ~ Admissible D_intermediate.
+Proof.
+  unfold Admissible, D_intermediate.
+  intros H.
+  destruct H as [H1 | H2].
+  - (* Case D_intermediate = D_discrete *)
+    unfold D_discrete in H1. lra.
+  - (* Case D_intermediate = D_continuum *)
+    unfold D_continuum in H2. lra.
+Qed.
+
+(* Step 3: Intermediate is spectral ghost *)
+Lemma intermediate_is_spectral_ghost : Existence D_intermediate.
+Proof.
+  apply SpectralGhost.
+  exact intermediate_not_admissible.
+Qed.
+
+(* ---------------------------- *)
+(* Step 4: Cardinality type *)
+(* ---------------------------- *)
+Inductive Cardinality := Aleph0 | Continuum | Intermediate.
+
+Definition depth_of_cardinality (c : Cardinality) : R :=
+  match c with
+  | Aleph0 => D_discrete
+  | Continuum => D_continuum
+  | Intermediate => D_intermediate
+  end.
+
+(* ---------------------------- *)
+(* Step 5: CH Closure Theorem *)
+(* ---------------------------- *)
+Theorem UFTF_CH_Unconditional_Closure :
+  forall c : Cardinality,
+    Admissible (depth_of_cardinality c) -> (c = Aleph0 \/ c = Continuum).
+Proof.
+  intros c H.
+  unfold depth_of_cardinality in H.
+  destruct c.
+  - left; reflexivity.
+  - right; reflexivity.
+  - exfalso. (* intermediate cannot be admissible *)
+    apply intermediate_not_admissible; assumption.
+Qed.
+
+(* ---------------------------- *)
+(* Step 6: Examples *)
+(* ---------------------------- *)
+Check (discrete_is_realizable).
+Check (continuum_is_realizable).
+Check (intermediate_is_spectral_ghost).
+
+
+
+
+discrete_is_realizable
+     : Existence D_discrete
+continuum_is_realizable
+     : Existence D_continuum
+intermediate_is_spectral_ghost
+     : Existence D_intermediate

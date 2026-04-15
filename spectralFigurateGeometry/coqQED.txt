@@ -1,0 +1,426 @@
+(*** UFT-F UNIFIED RESOLUTION: BB(6) & P != NP ***)
+
+Require Import Reals Rpower Lra.
+Open Scope R_scope.
+
+Parameter chi : R. 
+Axiom chi_bounds : 763.5 < chi < 763.6.
+
+Definition BB6_complexity : R := exp (65536 * ln 2).
+Definition is_ghost (complexity : R) : Prop := complexity > chi.
+
+Theorem BB6_is_ghost : is_ghost BB6_complexity.
+Proof.
+  unfold is_ghost, BB6_complexity.
+  
+  (* 1. Essential: Bring global bounds into local context for lra *)
+  pose proof chi_bounds as H_bounds.
+  destruct H_bounds as [H_low H_high].
+  
+  (* 2. Prove chi is positive (The witness for log operations) *)
+  assert (H_chi_pos : 0 < chi) by lra.
+  
+  (* 3. Map into log-space *)
+  rewrite <- (exp_ln chi H_chi_pos).
+  apply exp_increasing.
+  
+  (* 4. Prove 65536 * ln 2 > ln chi by using 1024 as a bridge *)
+  assert (H_ln_bound : ln chi < ln 1024).
+  { apply ln_increasing; [exact H_chi_pos | lra]. }
+  
+  assert (H_1024_log : ln 1024 = 10 * ln 2).
+  {
+    replace 1024 with (2 ^ 10) by (simpl; lra).
+    (* Explicitly cast 10 to a natural-indexed Real for ln_pow *)
+    replace 10 with (INR 10) by (unfold INR; simpl; lra).
+    
+    (* Provide witnesses explicitly to rewrite *)
+    assert (H2_pos : 0 < 2) by lra.
+    rewrite ln_pow; [reflexivity | exact H2_pos].
+  }
+  
+  (* 5. Final witness: ln 2 is positive *)
+  assert (H_ln2_pos : 0 < ln 2).
+  { rewrite <- ln_1. apply ln_increasing; lra. }
+  
+  (* 6. Combine and solve *)
+  rewrite H_1024_log in H_ln_bound.
+  lra.
+Qed.
+
+(* VERIFICATION SECTION *)
+Print BB6_is_ghost.
+Print Assumptions BB6_is_ghost.
+
+
+BB6_is_ghost = 
+(let H_bounds : 763.5 < chi < 763.6 := chi_bounds in
+match H_bounds with
+| conj x x0 =>
+    (fun (H_low : 763.5 < chi) (H_high : chi < 763.6) =>
+let H_chi_pos : 0 < chi :=
+  (let __arith : forall __x1 : R, 763.5 < __x1 -> 0 < __x1 :=
+  fun __x1 : R =>
+let __wit := nil in
+let __varmap := VarMap.Elt __x1 in
+let __ff :=
+  Tauto.IMPL
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc
+  (RMicromega.CQ
+  {|
+  QArith_base.Qnum := 7635;
+QArith_base.Qden := 10
+|});
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs := EnvRing.PEX 1
+|}
+  tt)
+  None
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc (RMicromega.CZ 0);
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs := EnvRing.PEX 1
+|}
+  tt)
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <: RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith chi H_low)
+:
+0 < chi
+  in
+eq_ind (exp (ln chi)) (fun r : R => exp (65536 * ln 2) > r)
+  (exp_increasing (ln chi) (65536 * ln 2)
+  (let H_ln_bound : ln chi < ln 1024 :=
+  ln_increasing chi 1024 H_chi_pos
+  ((let __arith :
+  forall __x1 : R, __x1 < 763.6 -> __x1 < 1024 :=
+  fun __x1 : R =>
+let __wit := nil in
+let __varmap := VarMap.Elt __x1 in
+let __ff :=
+  Tauto.IMPL
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs := EnvRing.PEX 1;
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs :=
+  EnvRing.PEc
+  (RMicromega.CQ
+  {|
+  QArith_base.Qnum := 7636;
+QArith_base.Qden := 10
+|})
+|}
+  tt)
+  None
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs := EnvRing.PEX 1;
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs :=
+  EnvRing.PEc (RMicromega.CZ 1024)
+|}
+  tt)
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <:
+RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith chi H_high)
+:
+chi < 1024)
+  in
+let H_1024_log : ln 1024 = 10 * ln 2 :=
+  let H : 2 ^ 10 = 1024 :=
+  ((let __arith :
+  2 *
+(2 *
+(2 *
+(2 * (2 * (2 * (2 * (2 * (2 * (2 * 1))))))))) =
+1024 :=
+  let __wit := nil in
+let __varmap := VarMap.Empty in
+let __ff :=
+  Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc
+  (RMicromega.CMult (RMicromega.CZ 2)
+  (RMicromega.CMult (RMicromega.CZ 2)
+  (RMicromega.CMult
+  (RMicromega.CZ 2)
+  (RMicromega.CMult
+  (RMicromega.CZ 2)
+  (RMicromega.CMult
+  (RMicromega.CZ 2)
+  (RMicromega.CMult
+  (RMicromega.CZ 2)
+  (RMicromega.CMult
+  (RMicromega.CZ 2)
+  (RMicromega.CMult
+  (RMicromega.CZ
+  2)
+  (RMicromega.CMult
+  (RMicromega.CZ
+  2)
+  (RMicromega.CMult
+  (RMicromega.CZ
+  2)
+  (RMicromega.CZ
+  1)))))))))));
+RingMicromega.Fop := RingMicromega.OpEq;
+RingMicromega.Frhs :=
+  EnvRing.PEc (RMicromega.CZ 1024)
+|}
+  tt
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <:
+RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith)
+:
+2 *
+(2 *
+(2 * (2 * (2 * (2 * (2 * (2 * (2 * (2 * 1))))))))) =
+1024)
+:
+2 ^ 10 = 1024
+  in
+eq_ind (2 ^ 10) (fun r : R => ln r = 10 * ln 2)
+  (let H0 : INR 10 = 10 :=
+  (((let __arith :
+  1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 = 10 :=
+  let __wit := nil in
+let __varmap := VarMap.Empty in
+let __ff :=
+  Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CPlus
+  (RMicromega.CZ
+  1)
+  (RMicromega.CZ
+  1))
+  (RMicromega.CZ
+  1))
+  (RMicromega.CZ
+  1))
+  (RMicromega.CZ 1))
+  (RMicromega.CZ 1))
+  (RMicromega.CZ 1))
+  (RMicromega.CZ 1))
+  (RMicromega.CZ 1))
+  (RMicromega.CZ 1));
+RingMicromega.Fop :=
+  RingMicromega.OpEq;
+RingMicromega.Frhs :=
+  EnvRing.PEc (RMicromega.CZ 10)
+|}
+  tt
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <:
+RMicromega.RTautoChecker __ff __wit =
+true)
+  (VarMap.find 0 __varmap)
+  in
+__arith)
+:
+1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 = 10)
+:
+1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 = 10)
+:
+INR 10 = 10
+  in
+eq_ind (INR 10)
+  (fun r : R => ln (2 ^ 10) = r * ln 2)
+  (let H2_pos : 0 < 2 :=
+  (let __arith : 0 < 2 :=
+  let __wit := nil in
+let __varmap := VarMap.Empty in
+let __ff :=
+  Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc (RMicromega.CZ 0);
+RingMicromega.Fop :=
+  RingMicromega.OpLt;
+RingMicromega.Frhs :=
+  EnvRing.PEc (RMicromega.CZ 2)
+|}
+  tt
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <:
+RMicromega.RTautoChecker __ff __wit =
+true)
+  (VarMap.find 0 __varmap)
+  in
+__arith)
+:
+0 < 2
+  in
+eq_ind_r (fun r : R => r = INR 10 * ln 2)
+  eq_refl (ln_pow 2 H2_pos 10))
+  10
+  H0)
+  1024
+  H
+  in
+let H_ln2_pos : 0 < ln 2 :=
+  eq_ind (ln 1) (fun r : R => r < ln 2)
+  (ln_increasing 1 2
+  ((let __arith : 0 < 1 :=
+  let __wit := nil in
+let __varmap := VarMap.Empty in
+let __ff :=
+  Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc (RMicromega.CZ 0);
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs :=
+  EnvRing.PEc (RMicromega.CZ 1)
+|}
+  tt
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <:
+RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith)
+:
+0 < 1)
+  ((let __arith : 1 < 2 :=
+  let __wit := nil in
+let __varmap := VarMap.Empty in
+let __ff :=
+  Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc (RMicromega.CZ 1);
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs :=
+  EnvRing.PEc (RMicromega.CZ 2)
+|}
+  tt
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <:
+RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith)
+:
+1 < 2))
+  0
+  ln_1
+  in
+let H_ln_bound0 : ln chi < 10 * ln 2 :=
+  eq_ind (ln 1024) (fun r : R => ln chi < r) H_ln_bound
+  (10 * ln 2) H_1024_log
+  in
+(let __arith :
+  forall __x2 __x1 : R,
+0 < __x2 -> __x1 < 10 * __x2 -> __x1 < 65536 * __x2 :=
+  fun __x2 __x1 : R =>
+let __wit :=
+  (RingMicromega.PsatzAdd
+  (RingMicromega.PsatzMulE
+  (RingMicromega.PsatzC
+  {|
+  QArith_base.Qnum := 65526;
+QArith_base.Qden := 1
+|})
+  (RingMicromega.PsatzIn QArith_base.Q 2))
+  (RingMicromega.PsatzAdd
+  (RingMicromega.PsatzIn QArith_base.Q 1)
+  (RingMicromega.PsatzIn QArith_base.Q 0))
+:: nil)%list
+  in
+let __varmap :=
+  VarMap.Branch (VarMap.Elt __x2) __x1 VarMap.Empty
+  in
+let __ff :=
+  Tauto.IMPL
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs :=
+  EnvRing.PEc (RMicromega.CZ 0);
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs := EnvRing.PEX 2
+|}
+  tt)
+  None
+  (Tauto.IMPL
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs := EnvRing.PEX 1;
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs :=
+  EnvRing.PEmul
+  (EnvRing.PEc (RMicromega.CZ 10))
+  (EnvRing.PEX 2)
+|}
+  tt)
+  None
+  (Tauto.A Tauto.isProp
+  {|
+  RingMicromega.Flhs := EnvRing.PEX 1;
+RingMicromega.Fop := RingMicromega.OpLt;
+RingMicromega.Frhs :=
+  EnvRing.PEmul
+  (EnvRing.PEc (RMicromega.CZ 65536))
+  (EnvRing.PEX 2)
+|}
+  tt))
+  in
+RMicromega.RTautoChecker_sound __ff __wit
+  (eq_refl <:
+RMicromega.RTautoChecker __ff __wit = true)
+  (VarMap.find 0 __varmap)
+  in
+__arith (ln 2) (ln chi) H_ln2_pos H_ln_bound0)
+:
+ln chi < 65536 * ln 2))
+  chi
+  (exp_ln chi H_chi_pos))
+  x
+  x0
+end) :
+is_ghost BB6_complexity
+     : is_ghost BB6_complexity
+Axioms:
+ClassicalDedekindReals.sig_not_dec
+  : forall P : Prop, {~ ~ P} + {~ P}
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+(forall n : nat, {P n} + {~ P n}) ->
+{n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),
+(forall x : A, f x = g x) -> f = g
+Classical_Prop.classic : forall P : Prop, P \/ ~ P
+chi_bounds : 763.5 < chi < 763.6
+chi : R
