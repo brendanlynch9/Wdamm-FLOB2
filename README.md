@@ -81,8 +81,7 @@ The primes are the keys.
 The filtering is complete.
 What remains is the shared responsibility to walk this paradise together ...with care, coherence, and love.
 Thank you for exploring it.
-— Brendan Lynch, MLIS
-10.5281/zenodo.17566371
+— Brendan Lynch, MLIS10.5281/zenodo.17566371
 10.5281/zenodo.17583962
 10.5281/zenodo.17592910
 10.5281/zenodo.17622862
@@ -153,7 +152,7 @@ Thank you for exploring it.
 10.5281/zenodo.19443024
 10.5281/zenodo.19443190
 10.5281/zenodo.19443437
-
+10.5281/zenodo.19583034
 
 
 
@@ -208,7 +207,6 @@ https://doi.org/10.5281/zenodo.18371701
 https://doi.org/10.5281/zenodo.18394009
 https://doi.org/10.5281/zenodo.18442372
 https://doi.org/10.5281/zenodo.18530229
-
 https://doi.org/10.5281/zenodo.18614443
 https://doi.org/10.5281/zenodo.18662559
 https://doi.org/10.5281/zenodo.18676159
@@ -229,7 +227,7 @@ https://doi.org/10.5281/zenodo.19443024
 https://doi.org/10.5281/zenodo.19443190
 https://doi.org/10.5281/zenodo.19443437
 https://doi.org/10.5281/zenodo.19515634
-
+https://doi.org/10.5281/zenodo.19583034
 
 
 
@@ -309,7 +307,7 @@ https://zenodo.org/records/19443024
 https://zenodo.org/records/19443190
 https://zenodo.org/records/19443437
 https://zenodo.org/records/19515634
-
+https://zenodo.org/records/19583034
 
 
 63/954,202 01/05/2026 03:33:21 PM Z ET
