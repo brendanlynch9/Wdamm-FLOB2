@@ -1,0 +1,180 @@
+(* Project Lacia: Foundational Formalization of Adaptive EVI
+   Status: FULLY VERIFIED (No Admitted Gaps, All Tactics Bound)
+*)
+
+Require Import Reals.
+Require Import Psatz. (* This binds the physical paths for lra and nra *)
+
+Open Scope R_scope.
+
+(** 1. Axiomatic Foundation of the Wasserstein Moduli Space **)
+
+Parameter Prob : Type. 
+Parameter W2 : Prob -> Prob -> R. 
+
+Axiom W2_pos : forall mu nu, W2 mu nu >= 0.
+Axiom W2_sym : forall mu nu, W2 mu nu = W2 nu mu.
+Axiom W2_ident : forall mu nu, W2 mu nu = 0 <-> mu = nu.
+
+(** 2. Functional Definitions for the Adaptive Framework **)
+
+Parameter Energy : Prob -> R.
+Parameter FisherInfo : Prob -> R.
+
+(* Definition: Adaptive Curvature Feedback Lambda *)
+Definition lambda_adaptive (alpha lambda0 : R) (mu : Prob) : R :=
+  lambda0 + alpha * (FisherInfo mu).
+
+Definition Trajectory := R -> Prob.
+
+(** 3. Formal Specification of the Adaptive EVI **)
+
+Definition satisfies_adaptive_EVI (mu_t : Trajectory) (alpha lambda0 : R) :=
+  forall (nu : Prob) (t : R),
+    t >= 0 ->
+    exists (deriv_W2_sq : R),
+      let lt := lambda_adaptive alpha lambda0 (mu_t t) in
+      let dist_sq := (W2 (mu_t t) nu)^2 in
+      (1/2) * deriv_W2_sq + lt * dist_sq <= (Energy nu) - (Energy (mu_t t)).
+
+(** 4. THE CORE PROOFS (QED) **)
+
+(** Theorem I: Positivity of Adaptive Curvature **)
+(* Use 'nra' to handle the product of alpha and FisherInfo. *)
+
+Theorem adaptive_curvature_positivity :
+  forall alpha lambda0 mu,
+    alpha >= 0 ->
+    lambda0 > 0 ->
+    FisherInfo mu >= 0 ->
+    lambda_adaptive alpha lambda0 mu > 0.
+Proof.
+  intros a l0 mu Ha Hl0 Hfi.
+  unfold lambda_adaptive.
+  (* nra handles non-linear products where lra fails *)
+  nra. 
+Qed.
+
+(** Theorem II: Fixed-Point Stability Identity **)
+
+Theorem fixed_point_attractor_stability :
+  forall (mu_t : Trajectory) (alpha lambda0 : R) (mu_star : Prob),
+    alpha >= 0 ->
+    lambda0 > 0 ->
+    satisfies_adaptive_EVI mu_t alpha lambda0 ->
+    (forall nu, Energy mu_star <= Energy nu) ->
+    forall t, t >= 0 -> mu_t t = mu_star ->
+      exists (deriv_W2_sq : R), forall nu, (1/2) * deriv_W2_sq <= Energy nu - Energy mu_star.
+Proof.
+  intros mu_t a l0 mu_star Ha Hl0 Hevi Hmin t Ht Hfixed.
+  
+  specialize (Hevi mu_star t Ht).
+  destruct Hevi as [dW Hineq].
+  exists dW.
+  intros nu.
+
+  (* 1. Substitute trajectory with the fixed point *)
+  rewrite Hfixed in Hineq. 
+  
+  (* 2. Establish the diagonal distance is zero *)
+  assert (H_dist_zero: W2 mu_star mu_star = 0).
+  { apply W2_ident. reflexivity. }
+  
+  (* 3. Rewrite the distance inside the EVI inequality *)
+  rewrite H_dist_zero in Hineq.
+  
+  (* 4. Simplify the arithmetic terms *)
+  unfold pow in Hineq.
+  rewrite Rmult_0_l in Hineq. (* Handles (0 * 0) *)
+  rewrite Rmult_0_r in Hineq. (* Handles (lt * 0) *)
+  
+  (* 5. Use Rplus_0_r if the term is (x + 0) or Rplus_0_l if it is (0 + x) 
+     In your case, (1/2 * dW + 0) requires Rplus_0_r. *)
+  rewrite Rplus_0_r in Hineq.
+  
+  (* 6. Prove the Energy gap is non-negative and finalize with lra *)
+  assert (H_energy_diag: Energy mu_star - Energy mu_star = 0) by lra.
+  rewrite H_energy_diag in Hineq.
+  
+  assert (H_min_bound: 0 <= Energy nu - Energy mu_star).
+  { specialize (Hmin nu). lra. }
+  
+  lra.
+Qed.
+
+(** Theorem III: Recovery of the Classical AGS Limit **)
+
+Theorem classical_limit_recovery :
+  forall mu_t lambda0,
+    satisfies_adaptive_EVI mu_t 0 lambda0 <-> 
+    (forall nu t, t >= 0 -> exists dW, (1/2) * dW + lambda0 * (W2 (mu_t t) nu)^2 <= Energy nu - Energy (mu_t t)).
+Proof.
+  intros mu_t l0.
+  unfold satisfies_adaptive_EVI, lambda_adaptive.
+  split; intros H nu t Ht; specialize (H nu t Ht); 
+  destruct H as [dW Hineq]; exists dW; 
+  rewrite ?Rmult_0_l, ?Rplus_0_r in *.
+  - exact Hineq.
+  - exact Hineq.
+Qed.
+(** 5. VERIFICATION REPORT **)
+
+(* This command generates the list of axioms and parameters 
+   your proof relies on. It proves there are no 'Admitted' 
+   statements left in the logic. *)
+Print Assumptions fixed_point_attractor_stability.
+Print Assumptions adaptive_curvature_positivity.
+Print Assumptions classical_limit_recovery.
+
+
+
+
+
+
+Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+W2_ident
+  : forall mu nu : Prob, W2 mu nu = 0 <-> mu = nu
+W2 : Prob -> Prob -> R
+Prob : Type
+FisherInfo : Prob -> R
+Energy : Prob -> R
+
+
+
+
+Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+Prob : Type
+FisherInfo : Prob -> R
+
+
+
+
+Axioms:
+ClassicalDedekindReals.sig_forall_dec
+  : forall P : nat -> Prop,
+    (forall n : nat, {P n} + {~ P n}) ->
+    {n : nat | ~ P n} + {forall n : nat, P n}
+FunctionalExtensionality.functional_extensionality_dep
+  : forall (A : Type) (B : A -> Type)
+      (f g : forall x : A, B x),
+    (forall x : A, f x = g x) -> f = g
+W2 : Prob -> Prob -> R
+Prob : Type
+FisherInfo : Prob -> R
+Energy : Prob -> R
